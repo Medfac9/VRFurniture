@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Menu;
+import android.view.MenuInflater;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -29,6 +31,15 @@ public class MainActivity extends AppCompatActivity {
                 .setNeutralButton(R.string.ok_button,null);
 
         menuDialog = helpDialog.create();
+    }
+
+    //Función onCreateOptionMenu, para añadir el estilo de nuestro action_bar
+    @Override
+    public boolean onCreateOptionsMenu (Menu menu) {
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.action_bar, menu); // set your file name
+        return super.onCreateOptionsMenu(menu);
     }
 
     //Función onOptionItemSelected, para definir el funcionamiento de las opciones del action_bar
