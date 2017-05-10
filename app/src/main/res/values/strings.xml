@@ -2,4 +2,5 @@
     <string name="app_name">VR Furniture</string>
     <string name="menu_help">Help</string>
     <string name="ok_button">OK</string>
+    <string name="appDescription">Aplicación destinada para ayudar a tener una idea sobre como va a quedar un mueble (MEJORAR ESTO).</string>
 </resources>
