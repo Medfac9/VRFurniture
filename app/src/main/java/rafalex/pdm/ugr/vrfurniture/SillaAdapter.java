@@ -6,13 +6,13 @@ import android.widget.BaseAdapter;
 
 import java.util.ArrayList;
 
-public class MuebleAdapter extends BaseAdapter {
+public class SillaAdapter extends BaseAdapter {
 
-    //ArrayList con todos los Muebles a mostrar
-    private ArrayList<Mueble> muebles;
+    //ArrayList con todos las Sillas a mostrar
+    private ArrayList<Silla> sillas;
 
-    public MuebleAdapter(ArrayList<Mueble> muebles) {
-        this.muebles = muebles;
+    public SillaAdapter(ArrayList<Silla> sillas) {
+        this.sillas = sillas;
 
         //Cada vez que cambiamos los elementos debemos noficarlo
         notifyDataSetChanged();
@@ -20,12 +20,12 @@ public class MuebleAdapter extends BaseAdapter {
 
     //Devuelve el numero de elementos
     public int getCount() {
-        return muebles.size();
+        return sillas.size();
     }
 
     //Devuelve el elemento de una posición
     public Object getItem(int position) {
-        return muebles.get(position);
+        return sillas.get(position);
     }
 
     //Devulve el ID del elemento (Generalmente no se usa)
@@ -38,14 +38,14 @@ public class MuebleAdapter extends BaseAdapter {
 
         //Si el contentView ya tiene un device, lo reutilizaremos con los nuevos datos
         // Si no crearemos uno nuevo
-        MuebleView view;
+        SillaView view;
         if (convertView == null)
-            view = new MuebleView(parent.getContext());
+            view = new SillaView(parent.getContext());
         else
-            view = (MuebleView) convertView;
+            view = (SillaView) convertView;
 
         //Asignamos los valores del Device a mostrar
-        view.setMueble(muebles.get(position));
+        view.setSilla(sillas.get(position));
 
         return view;
     }

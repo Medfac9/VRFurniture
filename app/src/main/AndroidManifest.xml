@@ -16,9 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="rafalex.pdm.ugr.vrfurniture.MainActivity"
-            android:label="@string/app_name" />
+        <activity android:name=".MainActivity"/>
+        <activity android:name=".SillaActivity" />
     </application>
 
 </manifest>

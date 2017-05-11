@@ -7,7 +7,7 @@
     tools:context="rafalex.pdm.ugr.vrfurniture.MainActivity">
 
     <ListView
-        android:id="@+id/mueble_selector"
+        android:id="@+id/silla_selector"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:stackFromBottom="false"

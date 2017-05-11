@@ -2,8 +2,8 @@ package rafalex.pdm.ugr.vrfurniture;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,25 +15,23 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class SillaActivity extends AppCompatActivity {
 
     //Datos para dialogos
     private AlertDialog menuDialog;
     private AlertDialog.Builder helpDialog;
 
-    //Muebles
-    private ArrayList<Mueble> tiposMuebles = new ArrayList();
+    //Sillas
+    private ArrayList<Silla> tiposSillas = new ArrayList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_silla);
 
-        //Inicializamos el array de muebles
-        tiposMuebles.add(new Mueble(R.drawable.silla));
-        tiposMuebles.add(new Mueble(R.drawable.mesa));
-        tiposMuebles.add(new Mueble(R.drawable.armario));
-        tiposMuebles.add(new Mueble(R.drawable.mesita));
+        //Inicializamos el array de sillas
+        tiposSillas.add(new Silla(R.drawable.silla));
+        tiposSillas.add(new Silla(R.drawable.silla2));
 
         //Crea los dialogos
         LayoutInflater inflater = this.getLayoutInflater();
@@ -55,20 +53,20 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         // Establece la vista, el adaptador y la funcion al hacer click de los elementos de la lista
-        ListView pairedListView = (ListView) findViewById(R.id.mueble_selector);
-        pairedListView.setAdapter(new MuebleAdapter(tiposMuebles));
-        pairedListView.setOnItemClickListener(MuebleClickListener);
+        ListView pairedListView = (ListView) findViewById(R.id.silla_selector);
+        pairedListView.setAdapter(new SillaAdapter(tiposSillas));
+        pairedListView.setOnItemClickListener(SillaClickListener);
 
     }
 
     // OnItemClickListener para las imágenes de la lista
-    private AdapterView.OnItemClickListener MuebleClickListener = new AdapterView.OnItemClickListener() {
+    private AdapterView.OnItemClickListener SillaClickListener = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView av, View v, int position, long id) {
 
-            // Inicia la siguiente acitividad.
-            Intent i = new Intent(MainActivity.this, SillaActivity.class);
-            i.putExtra("Mueble", (Mueble) av.getItemAtPosition(position));
-            startActivity(i);
+        // Inicia la siguiente acitividad.
+        Intent i = new Intent(SillaActivity.this, SillaActivity.class); //Siguiente clase por poner
+        i.putExtra("Silla", (Silla) av.getItemAtPosition(position));
+        startActivity(i);
         }
     };
 
