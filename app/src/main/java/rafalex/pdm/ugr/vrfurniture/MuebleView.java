@@ -18,6 +18,6 @@ public class MuebleView extends LinearLayout {
     //Permite establecer el mueble a mostrar
     public void setMueble(Mueble mueble) {
 
-        image.setImageResource(mueble.getMuebles());
+        image.setImageResource(mueble.getMueble());
     }
 }

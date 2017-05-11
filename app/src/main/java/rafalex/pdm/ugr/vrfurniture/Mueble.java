@@ -11,7 +11,7 @@ public class Mueble implements Serializable {
         this.mueble = mueble;
     }
 
-    public int getMuebles() {
+    public int getMueble() {
 
         return mueble;
     }
