@@ -3,16 +3,16 @@ package rafalex.pdm.ugr.vrfurniture;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-
 import java.util.ArrayList;
 
-public class SillaAdapter extends BaseAdapter {
 
-    //ArrayList con todos las Sillas a mostrar
-    private ArrayList<Silla> sillas;
+public class CategoriaAdapter extends BaseAdapter {
 
-    public SillaAdapter(ArrayList<Silla> sillas) {
-        this.sillas = sillas;
+    //ArrayList con todos los Muebles a mostrar
+    private ArrayList<Categoria> categorias;
+
+    public CategoriaAdapter(ArrayList<Categoria> categoria) {
+        this.categorias = categoria;
 
         //Cada vez que cambiamos los elementos debemos noficarlo
         notifyDataSetChanged();
@@ -20,12 +20,12 @@ public class SillaAdapter extends BaseAdapter {
 
     //Devuelve el numero de elementos
     public int getCount() {
-        return sillas.size();
+        return categorias.size();
     }
 
     //Devuelve el elemento de una posición
     public Object getItem(int position) {
-        return sillas.get(position);
+        return categorias.get(position);
     }
 
     //Devulve el ID del elemento (Generalmente no se usa)
@@ -38,14 +38,14 @@ public class SillaAdapter extends BaseAdapter {
 
         //Si el contentView ya tiene un device, lo reutilizaremos con los nuevos datos
         // Si no crearemos uno nuevo
-        SillaView view;
+        CategoriaView view;
         if (convertView == null)
-            view = new SillaView(parent.getContext());
+            view = new CategoriaView(parent.getContext());
         else
-            view = (SillaView) convertView;
+            view = (CategoriaView) convertView;
 
         //Asignamos los valores del Device a mostrar
-        view.setSilla(sillas.get(position));
+        view.setCategoria(categorias.get(position));
 
         return view;
     }

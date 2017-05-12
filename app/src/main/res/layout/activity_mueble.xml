@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="rafalex.pdm.ugr.vrfurniture.MainActivity">
+    tools:context="rafalex.pdm.ugr.vrfurniture.MuebleActivity">
 
     <ListView
-        android:id="@+id/mesa_selector"
+        android:id="@+id/mueble_selector"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:stackFromBottom="false"

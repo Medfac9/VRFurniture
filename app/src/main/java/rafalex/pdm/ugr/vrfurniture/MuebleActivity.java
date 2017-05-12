@@ -12,26 +12,24 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 
-public class MesaActivity extends AppCompatActivity {
+
+public class MuebleActivity extends AppCompatActivity {
+
+    Categoria categoria;
 
     //Datos para dialogos
     private AlertDialog menuDialog;
     private AlertDialog.Builder helpDialog;
 
-    //Mesas
-    private ArrayList<Mesa> tiposMesas = new ArrayList();
+    //Muebles
+    private ArrayList<Mueble> muebles = new ArrayList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mesa);
-
-        //Inicializamos el array de mesas
-        tiposMesas.add(new Mesa(R.drawable.mesa));
-        tiposMesas.add(new Mesa(R.drawable.mesa1));
+        setContentView(R.layout.activity_mueble);
 
         //Crea los dialogos
         LayoutInflater inflater = this.getLayoutInflater();
@@ -52,20 +50,25 @@ public class MesaActivity extends AppCompatActivity {
 
         super.onResume();
 
+        categoria = (Categoria) getIntent().getExtras().getSerializable("Categoria");
+
+        for (int imgMueble : categoria.getImages())
+            muebles.add(new Mueble(imgMueble));
+
         // Establece la vista, el adaptador y la funcion al hacer click de los elementos de la lista
-        ListView pairedListView = (ListView) findViewById(R.id.mesa_selector);
-        pairedListView.setAdapter(new MesaAdapter(tiposMesas));
-        pairedListView.setOnItemClickListener(MesaClickListener);
+        ListView pairedListView = (ListView) findViewById(R.id.mueble_selector);
+        pairedListView.setAdapter(new MuebleAdapter(muebles));
+        pairedListView.setOnItemClickListener(MuebleClickListener);
 
     }
 
     // OnItemClickListener para las imágenes de la lista
-    private AdapterView.OnItemClickListener MesaClickListener = new AdapterView.OnItemClickListener() {
+    private AdapterView.OnItemClickListener MuebleClickListener = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView av, View v, int position, long id) {
 
             // Inicia la siguiente acitividad.
-            Intent i = new Intent(MesaActivity.this, MesaActivity.class);
-            i.putExtra("Mesa", (Mesa) av.getItemAtPosition(position));
+            Intent i = new Intent(MuebleActivity.this, MuebleActivity.class);
+            i.putExtra("Mueble", (Mueble) av.getItemAtPosition(position));
             startActivity(i);
         }
     };

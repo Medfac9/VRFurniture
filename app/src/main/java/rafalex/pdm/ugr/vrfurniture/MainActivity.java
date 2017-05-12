@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,18 +23,25 @@ public class MainActivity extends AppCompatActivity {
     private AlertDialog.Builder helpDialog;
 
     //Muebles
-    private ArrayList<Mueble> tiposMuebles = new ArrayList();
+    private ArrayList<Categoria> categorias = new ArrayList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Inicializamos el array de muebles
-        tiposMuebles.add(new Mueble(R.drawable.silla));
-        tiposMuebles.add(new Mueble(R.drawable.mesa));
-        tiposMuebles.add(new Mueble(R.drawable.armario));
-        tiposMuebles.add(new Mueble(R.drawable.mesita));
+        //Inicializamos los arrays de muebles
+
+        ArrayList<Integer> sillas = new ArrayList<Integer> (Arrays.asList(R.drawable.silla, R.drawable.silla2));
+        ArrayList<Integer> mesas = new ArrayList<Integer> (Arrays.asList(R.drawable.mesa, R.drawable.mesa1));
+        ArrayList<Integer> armarios = new ArrayList<Integer> (Arrays.asList(R.drawable.armario));
+        ArrayList<Integer> mesitas = new ArrayList<Integer> (Arrays.asList(R.drawable.mesita));
+
+        //Inicializamos el array de Categorias
+        categorias.add(new Categoria("Sillas", sillas));
+        categorias.add(new Categoria("Mesas", mesas));
+        categorias.add(new Categoria("Armario", armarios));
+        categorias.add(new Categoria("Mesitas", mesitas));
 
         //Crea los dialogos
         LayoutInflater inflater = this.getLayoutInflater();
@@ -55,19 +63,19 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         // Establece la vista, el adaptador y la funcion al hacer click de los elementos de la lista
-        ListView pairedListView = (ListView) findViewById(R.id.mueble_selector);
-        pairedListView.setAdapter(new MuebleAdapter(tiposMuebles));
-        pairedListView.setOnItemClickListener(MuebleClickListener);
+        ListView pairedListView = (ListView) findViewById(R.id.categoria_selector);
+        pairedListView.setAdapter(new CategoriaAdapter(categorias));
+        pairedListView.setOnItemClickListener(CategoriaClickListener);
 
     }
 
     // OnItemClickListener para las imágenes de la lista
-    private AdapterView.OnItemClickListener MuebleClickListener = new AdapterView.OnItemClickListener() {
+    private AdapterView.OnItemClickListener CategoriaClickListener = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView av, View v, int position, long id) {
 
             // Inicia la siguiente acitividad.
-            Intent i = new Intent(MainActivity.this, SillaActivity.class);
-            i.putExtra("Mueble", (Mueble) av.getItemAtPosition(position));
+            Intent i = new Intent(MainActivity.this, MuebleActivity.class);
+            i.putExtra("Categoria", (Categoria) av.getItemAtPosition(position));
             startActivity(i);
         }
     };
