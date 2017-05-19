@@ -11,7 +11,7 @@ countries.
 package rafalex.pdm.ugr.vrfurniture.Vuforia;
 
 // Used to send back to the activity any error during vuforia processes
-public class SampleApplicationException extends Exception
+public class VuforiaApplicationException extends Exception
 {
     
     private static final long serialVersionUID = 2L;
@@ -30,7 +30,7 @@ public class SampleApplicationException extends Exception
     private String mString = "";
     
     
-    public SampleApplicationException(int code, String description)
+    public VuforiaApplicationException(int code, String description)
     {
         super(description);
         mCode = code;

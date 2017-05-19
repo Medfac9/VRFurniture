@@ -1,9 +1,14 @@
 package rafalex.pdm.ugr.vrfurniture;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,11 +17,18 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
+
+    private final int MY_PERMISSIONS_REQUEST_CAMERA = 123;
+    private final int MY_PERMISSIONS_REQUEST_INTERNET = 234;
+    private final int MY_PERMISSIONS_REQUEST_NETWORK_STATE = 345;
+    private final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL = 456;
 
     //Datos para dialogos
     private AlertDialog menuDialog;
@@ -66,6 +78,20 @@ public class MainActivity extends AppCompatActivity {
         ListView pairedListView = (ListView) findViewById(R.id.categoria_selector);
         pairedListView.setAdapter(new CategoriaAdapter(categorias));
         pairedListView.setOnItemClickListener(CategoriaClickListener);
+
+        //Pedimos los permisos necesarios al usuario
+        if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+            if (Build.VERSION.SDK_INT > 22)
+                requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_CAMERA);
+        if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED)
+            if (Build.VERSION.SDK_INT > 22)
+                requestPermissions(new String[]{Manifest.permission.INTERNET}, MY_PERMISSIONS_REQUEST_INTERNET);
+        if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED)
+            if (Build.VERSION.SDK_INT > 22)
+                requestPermissions(new String[]{Manifest.permission.ACCESS_NETWORK_STATE}, MY_PERMISSIONS_REQUEST_NETWORK_STATE);
+        if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            if (Build.VERSION.SDK_INT > 22)
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL);
 
     }
 

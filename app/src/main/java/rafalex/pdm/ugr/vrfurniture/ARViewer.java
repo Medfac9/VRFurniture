@@ -45,11 +45,11 @@ import com.vuforia.Vuforia;
 import java.util.Vector;
 
 
-public class ARViewer extends Activity implements SampleApplicationControl {
+public class ARViewer extends Activity implements VuforiaApplicationControl {
 
     private static final String LOGTAG = "ARViewer";
 
-    SampleApplicationSession vuforiaAppSession;
+    VuforiaApplicationSession vuforiaAppSession;
 
     private DataSet mDataset;
 
@@ -73,14 +73,14 @@ public class ARViewer extends Activity implements SampleApplicationControl {
 
     private static boolean OPTIMIZE_VR = true;
 
-    boolean mIsStereo = false;
+    boolean mIsStereo = true;
     boolean mIsVR = false;
     
     // Called when the activity first starts or the user navigates back to an
     // activity.
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
+
         Log.d(LOGTAG, "onCreate");
         super.onCreate(savedInstanceState);
 
@@ -89,7 +89,7 @@ public class ARViewer extends Activity implements SampleApplicationControl {
                 | View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
 
-        vuforiaAppSession = new SampleApplicationSession(this);
+        vuforiaAppSession = new VuforiaApplicationSession(this);
         
         startLoadingAnimation();
 
@@ -104,14 +104,12 @@ public class ARViewer extends Activity implements SampleApplicationControl {
         
     }
     
-    public void onWindowFocusChanged(boolean hasFocus)
-    {
+    public void onWindowFocusChanged(boolean hasFocus) {
         // Hide the Android navigation bar (if the device has one), as it gets in the way in stereo mode
         goFullScreen();
     }
 
-    private void goFullScreen()
-    {
+    private void goFullScreen() {
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
               | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -122,9 +120,7 @@ public class ARViewer extends Activity implements SampleApplicationControl {
     }
 
     // Process Single Tap event to trigger autofocus
-    private class GestureListener extends
-        GestureDetector.SimpleOnGestureListener
-    {
+    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
         // Used to set autofocus one second after a manual focus is triggered
         private final Handler autofocusHandler = new Handler();
         
@@ -161,29 +157,26 @@ public class ARViewer extends Activity implements SampleApplicationControl {
     // We want to load specific textures from the APK, which we will later use
     // for rendering.
     
-    private void loadTextures()
-    {
+    private void loadTextures() {
     }
     
     
     // Called when the activity will start interacting with the user.
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
+
         Log.d(LOGTAG, "onResume");
         super.onResume();
         
-        try
-        {
+        try {
+
             vuforiaAppSession.resumeAR();
-        } catch (SampleApplicationException e)
-        {
+        } catch (VuforiaApplicationException e) {
             Log.e(LOGTAG, e.getString());
         }
         
         // Resume the GL view:
-        if (mGlView != null)
-        {
+        if (mGlView != null) {
             mGlView.setVisibility(View.VISIBLE);
             mGlView.onResume();
         }
@@ -193,8 +186,8 @@ public class ARViewer extends Activity implements SampleApplicationControl {
     
     // Callback for configuration changes the activity handles itself
     @Override
-    public void onConfigurationChanged(Configuration config)
-    {
+    public void onConfigurationChanged(Configuration config) {
+
         Log.d(LOGTAG, "onConfigurationChanged");
         super.onConfigurationChanged(config);
         
@@ -208,22 +201,20 @@ public class ARViewer extends Activity implements SampleApplicationControl {
     
     // Called when the system is about to start resuming a previous activity.
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
+
         Log.d(LOGTAG, "onPause");
         super.onPause();
         
-        if (mGlView != null)
-        {
+        if (mGlView != null) {
+
             mGlView.setVisibility(View.INVISIBLE);
             mGlView.onPause();
         }
         
-        try
-        {
+        try {
             vuforiaAppSession.pauseAR();
-        } catch (SampleApplicationException e)
-        {
+        } catch (VuforiaApplicationException e) {
             Log.e(LOGTAG, e.getString());
         }
     }
@@ -231,16 +222,14 @@ public class ARViewer extends Activity implements SampleApplicationControl {
     
     // The final call you receive before your activity is destroyed.
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
+
         Log.d(LOGTAG, "onDestroy");
         super.onDestroy();
         
-        try
-        {
+        try {
             vuforiaAppSession.stopAR();
-        } catch (SampleApplicationException e)
-        {
+        } catch (VuforiaApplicationException e) {
             Log.e(LOGTAG, e.getString());
         }
         
@@ -253,8 +242,7 @@ public class ARViewer extends Activity implements SampleApplicationControl {
     
     
     // Initializes AR application components.
-    private void initApplicationAR()
-    {
+    private void initApplicationAR() {
         // Create OpenGL ES view:
         int depthSize = 16;
         int stencilSize = 0;
@@ -280,36 +268,30 @@ public class ARViewer extends Activity implements SampleApplicationControl {
     }
 
 
-    private void startLoadingAnimation()
-    {
-        mUILayout = (RelativeLayout) View.inflate(this, R.layout.camera_overlay,
-            null);
+    private void startLoadingAnimation() {
+
+        mUILayout = (RelativeLayout) View.inflate(this, R.layout.camera_overlay, null);
 
         mUILayout.setVisibility(View.VISIBLE);
         mUILayout.setBackgroundColor(Color.BLACK);
 
         // Gets a reference to the loading dialog
-        loadingDialogHandler.mLoadingDialogContainer = mUILayout
-            .findViewById(R.id.loading_indicator);
+        loadingDialogHandler.mLoadingDialogContainer = mUILayout.findViewById(R.id.loading_indicator);
 
         // Shows the loading indicator at start
-        loadingDialogHandler
-            .sendEmptyMessage(LoadingDialogHandler.SHOW_LOADING_DIALOG);
+        loadingDialogHandler.sendEmptyMessage(LoadingDialogHandler.SHOW_LOADING_DIALOG);
 
         // Adds the inflated layout to the view
-        addContentView(mUILayout, new LayoutParams(LayoutParams.MATCH_PARENT,
-            LayoutParams.MATCH_PARENT));
+        addContentView(mUILayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
     }
 
 
     // Methods to load and destroy tracking data.
     @Override
-    public boolean doLoadTrackersData()
-    {
+    public boolean doLoadTrackersData() {
         TrackerManager tManager = TrackerManager.getInstance();
-        ObjectTracker objectTracker = (ObjectTracker) tManager
-            .getTracker(ObjectTracker.getClassType());
+        ObjectTracker objectTracker = (ObjectTracker) tManager.getTracker(ObjectTracker.getClassType());
         if (objectTracker == null)
             return false;
 
@@ -326,8 +308,7 @@ public class ARViewer extends Activity implements SampleApplicationControl {
             return false;
 
         int numTrackables = mDataset.getNumTrackables();
-        for (int count = 0; count < numTrackables; count++)
-        {
+        for (int count = 0; count < numTrackables; count++) {
             Trackable trackable = mDataset.getTrackable(count);
 
             String name = "Current Dataset : " + trackable.getName();
@@ -341,25 +322,20 @@ public class ARViewer extends Activity implements SampleApplicationControl {
 
 
     @Override
-    public boolean doUnloadTrackersData()
-    {
+    public boolean doUnloadTrackersData() {
         // Indicate if the trackers were unloaded correctly
         boolean result = true;
 
         TrackerManager tManager = TrackerManager.getInstance();
-        ObjectTracker objectTracker = (ObjectTracker) tManager
-            .getTracker(ObjectTracker.getClassType());
+        ObjectTracker objectTracker = (ObjectTracker) tManager.getTracker(ObjectTracker.getClassType());
         if (objectTracker == null)
             return false;
 
-        if (mDataset != null && mDataset.isActive())
-        {
+        if (mDataset != null && mDataset.isActive()) {
             if (objectTracker.getActiveDataSet(0).equals(mDataset)
-                && !objectTracker.deactivateDataSet(mDataset))
-            {
+                && !objectTracker.deactivateDataSet(mDataset)) {
                 result = false;
-            } else if (!objectTracker.destroyDataSet(mDataset))
-            {
+            } else if (!objectTracker.destroyDataSet(mDataset)) {
                 result = false;
             }
 
@@ -371,11 +347,9 @@ public class ARViewer extends Activity implements SampleApplicationControl {
 
 
     @Override
-    public void onInitARDone(SampleApplicationException exception)
-    {
+    public void onInitARDone(VuforiaApplicationException exception) {
 
-        if (exception == null)
-        {
+        if (exception == null) {
             initApplicationAR();
 
             mRenderer.mIsActive = true;
@@ -393,24 +367,20 @@ public class ARViewer extends Activity implements SampleApplicationControl {
             // Sets the layout background to transparent
             mUILayout.setBackgroundColor(Color.TRANSPARENT);
 
-            try
-            {
+            try {
                 vuforiaAppSession.startAR(CameraDevice.CAMERA_DIRECTION.CAMERA_DIRECTION_DEFAULT);
-            } catch (SampleApplicationException e)
-            {
+            } catch (VuforiaApplicationException e) {
                 Log.e(LOGTAG, e.getString());
             }
 
             boolean result = CameraDevice.getInstance().setFocusMode(
                 CameraDevice.FOCUS_MODE.FOCUS_MODE_CONTINUOUSAUTO);
 
-            if(mIsVR && OPTIMIZE_VR)
-            {
+            if(mIsVR && OPTIMIZE_VR) {
                 CameraDevice.getInstance().stop(); // In VR we don't need the camera feed since we are not tracking objects
             }
 
-        } else
-        {
+        } else {
             Log.e(LOGTAG, exception.getString());
             showInitializationErrorMessage(exception.getString());
         }
@@ -418,31 +388,24 @@ public class ARViewer extends Activity implements SampleApplicationControl {
 
 
     // Shows initialization error messages as System dialogs
-    public void showInitializationErrorMessage(String message)
-    {
+    public void showInitializationErrorMessage(String message) {
         final String errorMessage = message;
-        runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                if (mErrorDialog != null)
-                {
+        runOnUiThread(new Runnable() {
+            public void run() {
+                if (mErrorDialog != null) {
                     mErrorDialog.dismiss();
                 }
 
                 // Generates an Alert Dialog to show the error message
-                AlertDialog.Builder builder = new AlertDialog.Builder(
-                    ARViewer.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(ARViewer.this);
                 builder
                     .setMessage(errorMessage)
                     .setTitle(getString(R.string.INIT_ERROR))
                     .setCancelable(false)
                     .setIcon(0)
                     .setPositiveButton(getString(R.string.ok_button),
-                        new DialogInterface.OnClickListener()
-                        {
-                            public void onClick(DialogInterface dialog, int id)
-                            {
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
                                 finish();
                             }
                         });
@@ -455,14 +418,12 @@ public class ARViewer extends Activity implements SampleApplicationControl {
 
 
     @Override
-    public void onVuforiaUpdate(State state)
-    {
+    public void onVuforiaUpdate(State state) {
     }
 
 
     @Override
-    public boolean doInitTrackers()
-    {
+    public boolean doInitTrackers() {
         // Indicate if the trackers were initialized correctly
         boolean result = true;
 
@@ -470,27 +431,23 @@ public class ARViewer extends Activity implements SampleApplicationControl {
 
         // Trying to initialize the image tracker
         Tracker objectTracker = tManager.initTracker(ObjectTracker.getClassType());
-        if (objectTracker == null)
-        {
+        if (objectTracker == null) {
             Log.e(
                 LOGTAG,
                 "Object tracker not initialized. Tracker already initialized or the camera is already started");
             result = false;
-        } else
-        {
+        } else {
             Log.i(LOGTAG, "Object tracker successfully initialized");
         }
 
         RotationalDeviceTracker deviceTracker = (RotationalDeviceTracker) tManager.initTracker(RotationalDeviceTracker.getClassType());
-        if (deviceTracker == null)
-        {
+        if (deviceTracker == null) {
             Log.e(
                     LOGTAG,
                     "Rotational Device Tracker not initialized. Tracker already initialized or the camera is already started");
             result = false;
         }
-        else
-        {
+        else {
             // Set correction model to head if using viewer otherwise handheld
             if (mIsStereo)
                 deviceTracker.setModelCorrection(deviceTracker.getDefaultHeadModel());
@@ -498,25 +455,21 @@ public class ARViewer extends Activity implements SampleApplicationControl {
                 deviceTracker.setModelCorrection(deviceTracker.getDefaultHandheldModel());
 
             TransformModel model = deviceTracker.getModelCorrection();
-            if (model == null)
-            {
+            if (model == null) {
                 Log.e(LOGTAG,"Error no transform model");
             }
-            else
-            {
+            else {
                 // We check which transform model is set for the rotation correction and then we get the pivot used to apply the correction when the device rotates. This is done so we know the model was set properly.
 
                 // This transform model is set when there is a viewer present, we use a head model for this correction
-                if (model.getType() == TransformModel.TYPE.TRANSFORM_MODEL_HEAD)
-                {
+                if (model.getType() == TransformModel.TYPE.TRANSFORM_MODEL_HEAD) {
                     Log.i(LOGTAG, "Transform model: Head");
                     HeadTransformModel headModel = (HeadTransformModel) model;
                     Log.i(LOGTAG,"Transform model pivot: " + headModel.getPivotPoint().getData()[0] +","+ headModel.getPivotPoint().getData()[1] +","+ headModel.getPivotPoint().getData()[2] );
                 }
 
                 // In this mode we are in full screen mode and the user is holding the device with the hands so we apply a handheld model
-                if (model.getType() == TransformModel.TYPE.TRANSFORM_MODEL_HANDHELD)
-                {
+                if (model.getType() == TransformModel.TYPE.TRANSFORM_MODEL_HANDHELD) {
                     Log.i(LOGTAG, "Transform model: Handheld");
                     HandheldTransformModel handheldModel = (HandheldTransformModel) model;
                     Log.i(LOGTAG,"Transform model pivot: " + handheldModel.getPivotPoint().getData()[0] +","+ handheldModel.getPivotPoint().getData()[1] +","+ handheldModel.getPivotPoint().getData()[2] );
@@ -530,14 +483,12 @@ public class ARViewer extends Activity implements SampleApplicationControl {
 
 
     @Override
-    public boolean doStartTrackers()
-    {
+    public boolean doStartTrackers() {
         // Indicate if the trackers were started correctly
         boolean result = true;
 
         // We do not start the object tracker if in VR mode since we do not have interaction with any target in the VR scene, this way we save up some processing time
-        if(!mIsVR || !OPTIMIZE_VR)
-        {
+        if(!mIsVR || !OPTIMIZE_VR) {
             Tracker objectTracker = TrackerManager.getInstance().getTracker(
                     ObjectTracker.getClassType());
             if (objectTracker != null)
@@ -548,8 +499,7 @@ public class ARViewer extends Activity implements SampleApplicationControl {
         RotationalDeviceTracker deviceTracker = (RotationalDeviceTracker) TrackerManager.getInstance().getTracker(
                 RotationalDeviceTracker.getClassType());
 
-        if(mIsVR)
-        {
+        if(mIsVR) {
             if (deviceTracker != null) {
                 if (deviceTracker.start()) {
                     Log.d(LOGTAG, "Successfully started Device Tracker.");
@@ -568,8 +518,7 @@ public class ARViewer extends Activity implements SampleApplicationControl {
     
     
     @Override
-    public boolean doStopTrackers()
-    {
+    public boolean doStopTrackers() {
         // Indicate if the trackers were stopped correctly
         boolean result = true;
         
@@ -588,8 +537,7 @@ public class ARViewer extends Activity implements SampleApplicationControl {
     
     
     @Override
-    public boolean doDeinitTrackers()
-    {
+    public boolean doDeinitTrackers() {
         // Indicate if the trackers were deinitialized correctly
         boolean result = true;
         

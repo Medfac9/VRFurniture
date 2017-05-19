@@ -67,8 +67,8 @@ public class MuebleActivity extends AppCompatActivity {
         public void onItemClick(AdapterView av, View v, int position, long id) {
 
             // Inicia la siguiente acitividad.
-            Intent i = new Intent(MuebleActivity.this, MuebleActivity.class);
-            i.putExtra("Mueble", (Mueble) av.getItemAtPosition(position));
+            Intent i = new Intent(MuebleActivity.this, ARViewer.class);
+            //i.putExtra("Mueble", (Mueble) av.getItemAtPosition(position));
             startActivity(i);
         }
     };

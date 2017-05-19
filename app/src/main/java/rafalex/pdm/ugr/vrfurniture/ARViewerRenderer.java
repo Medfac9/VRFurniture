@@ -47,11 +47,10 @@ import javax.microedition.khronos.opengles.GL10;
 
 
 // The renderer class for the ARViewer sample.
-public class ARViewerRenderer implements GLSurfaceView.Renderer
-{
+public class ARViewerRenderer implements GLSurfaceView.Renderer {
     private static final String LOGTAG = "ARViewerRenderer";
 
-    private SampleApplicationSession vuforiaAppSession;
+    private VuforiaApplicationSession vuforiaAppSession;
     private ARViewer mActivity;
     private RenderingPrimitives renderingPrimitives;
 
@@ -103,7 +102,7 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer
     private static final float AR_OBJECT_SCALE_FLOAT = 0.025f;
 
 
-    public ARViewerRenderer(ARViewer activity, SampleApplicationSession session) {
+    public ARViewerRenderer(ARViewer activity, VuforiaApplicationSession session) {
 
         mActivity = activity;
         vuforiaAppSession = session;
@@ -111,14 +110,13 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer
         interactionViewMatrix = SampleMath.Matrix44FIdentity();
         deviceViewMatrix = new Matrix34F();
 
-        mIsVR = true;
+        mIsVR = false;
     }
 
 
     // Called to draw the current frame.
     @Override
-    public void onDrawFrame(GL10 gl)
-    {
+    public void onDrawFrame(GL10 gl) {
         if (!mIsActive)
             return;
 
@@ -129,8 +127,7 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer
 
     // Called when the surface is created or recreated.
     @Override
-    public void onSurfaceCreated(GL10 gl, EGLConfig config)
-    {
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         Log.d(LOGTAG, "GLRenderer.onSurfaceCreated");
 
         initRendering();
@@ -143,8 +140,7 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer
 
     // Called when the surface changed size.
     @Override
-    public void onSurfaceChanged(GL10 gl, int width, int height)
-    {
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
         Log.d(LOGTAG, "GLRenderer.onSurfaceChanged");
 
         // Call Vuforia function to handle render surface size changes:
@@ -155,22 +151,19 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer
     }
 
 
-    public synchronized void updateRenderingPrimitives()
-    {
+    public synchronized void updateRenderingPrimitives() {
         renderingPrimitives = Device.getInstance().getRenderingPrimitives();
     }
 
 
     // Function for initializing the renderer.
-    private void initRendering()
-    {
+    private void initRendering() {
         mRenderer = Renderer.getInstance();
 
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, Vuforia.requiresAlpha() ? 0.0f
                 : 1.0f);
 
-        for (Texture t : mTextures)
-        {
+        for (Texture t : mTextures) {
             GLES20.glGenTextures(1, t.mTextureID, 0);
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, t.mTextureID[0]);
             GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
@@ -204,8 +197,7 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer
                 DistoShaders.DISTORTION_FRAGMENT_SHADER);
 
         // Rendering configuration for the stereo distortion
-        if(distoShaderProgramID > 0)
-        {
+        if(distoShaderProgramID > 0) {
             distoVertexHandle = GLES20.glGetAttribLocation(distoShaderProgramID,
                     "vertexPosition");
             distoTexCoordHandle = GLES20.glGetAttribLocation(distoShaderProgramID,
@@ -215,8 +207,7 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer
         }
 
         // Rendering configuration for video background
-        if (vbShaderProgramID > 0)
-        {
+        if (vbShaderProgramID > 0) {
             // Activate shader:
             GLES20.glUseProgram(vbShaderProgramID);
 
@@ -235,17 +226,15 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer
             GLES20.glUseProgram(0);
         }
 
-        try
-        {
+        try {
             mMountainModelVR = new SampleApplicationV3DModel();
             mMountainModelVR.loadModel(mActivity.getResources().getAssets(),
-                    "ARViewer/Mountain_VR.v3d");
+                    "ARVR/Mountain_VR.v3d");
 
             mMountainModelAR = new SampleApplicationV3DModel();
             mMountainModelAR.loadModel(mActivity.getResources().getAssets(),
-                    "ARViewer/Mountain_AR.v3d");
-        } catch (IOException e)
-        {
+                    "ARVR/Mountain_AR.v3d");
+        } catch (IOException e) {
             Log.e(LOGTAG, "Unable to load models");
         }
 
@@ -256,8 +245,7 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer
     }
 
     // The render function.
-    private synchronized void renderFrame()
-    {
+    private synchronized void renderFrame() {
         State state = TrackerManager.getInstance().getStateUpdater().updateState();
         mRenderer.begin(state);
 
@@ -295,8 +283,7 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer
 
         // The 'postprocess' view is a special one that indicates that a distortion postprocess is required
         // If this is present, then we need to prepare an off-screen buffer to support the distortion
-        if (viewList.contains(VIEW.VIEW_POSTPROCESS))
-        {
+        if (viewList.contains(VIEW.VIEW_POSTPROCESS)) {
             Vec2I textureSize = renderingPrimitives.getDistortionTextureSize(VIEW.VIEW_POSTPROCESS);
             distortForViewer = prepareViewerDistortion(textureSize);
         }
@@ -309,24 +296,20 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
         // stereo rendering
-        for (int v = 0; v < viewList.getNumViews(); v++)
-        {
+        for (int v = 0; v < viewList.getNumViews(); v++) {
 
             int viewID = viewList.getView(v);
 
             // Any post processing is a special case that will be completed after
             // the main render loop
-            if (viewID != VIEW.VIEW_POSTPROCESS)
-            {
+            if (viewID != VIEW.VIEW_POSTPROCESS) {
 
                 Vec4I viewport;
-                if (distortForViewer)
-                {
+                if (distortForViewer) {
                     // We're doing distortion via an off-screen buffer, so the viewport is relative to that buffer
                     viewport = renderingPrimitives.getDistortionTextureViewport(viewID);
                 }
-                else
-                {
+                else {
                     // We're writing directly to the screen, so the viewport is relative to the screen
                     viewport = renderingPrimitives.getViewport(viewID);
                 }
@@ -339,14 +322,13 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer
 
                 float projectionMatrix[] = new float[16];
 
-                if (mIsVR)
-                {
+                if (mIsVR) {
                     Matrix34F projMatrix = renderingPrimitives.getProjectionMatrix(viewID, COORDINATE_SYSTEM_TYPE.COORDINATE_SYSTEM_WORLD);
 
                     float rawProjectionMatrixGL[] = Tool.convertPerspectiveProjection2GLMatrix(
                             projMatrix,
-                            SampleApplicationSession.NEAR_PLANE,
-                            SampleApplicationSession.FAR_PLANE)
+                            VuforiaApplicationSession.NEAR_PLANE,
+                            VuforiaApplicationSession.FAR_PLANE)
                             .getData();
 
                     // Apply the appropriate eye adjustment to the raw projection matrix, and assign to the global variable
@@ -363,14 +345,13 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer
 
                     renderVRWorld(deviceViewPose.getData(), projectionMatrix);
                 }
-                else
-                {
+                else {
                     Matrix34F projMatrix = renderingPrimitives.getProjectionMatrix(viewID, COORDINATE_SYSTEM_TYPE.COORDINATE_SYSTEM_CAMERA);
 
                     float rawProjectionMatrixGL[] = Tool.convertPerspectiveProjection2GLMatrix(
                             projMatrix,
-                            SampleApplicationSession.NEAR_PLANE,
-                            SampleApplicationSession.FAR_PLANE)
+                            VuforiaApplicationSession.NEAR_PLANE,
+                            VuforiaApplicationSession.FAR_PLANE)
                             .getData();
 
                     // Apply the appropriate eye adjustment to the raw projection matrix, and assign to the global variable
@@ -389,8 +370,7 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer
         }
 
         // As a final step, perform the viewer distortion if required
-        if (distortForViewer)
-        {
+        if (distortForViewer) {
             Vec4I screenViewport = renderingPrimitives.getViewport(VIEW.VIEW_POSTPROCESS);
             Mesh distoMesh = renderingPrimitives.getDistortionTextureMesh(VIEW.VIEW_POSTPROCESS);
             performViewerDistortion(screenViewport, distoMesh);
@@ -404,11 +384,9 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer
     }
 
 
-    boolean prepareViewerDistortion(Vec2I textureSize)
-    {
+    boolean prepareViewerDistortion(Vec2I textureSize) {
         // Check if the texture size is valid; if not, the configuration doesn't support distortion
-        if (textureSize.getData()[0] == 0 || textureSize.getData()[1] == 0)
-        {
+        if (textureSize.getData()[0] == 0 || textureSize.getData()[1] == 0) {
             // Log a warning
             Log.i(LOGTAG, "Viewer distortion is not supported in this configuration");
 
@@ -421,8 +399,7 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer
         // If the texture has changed size, then regenerate the off-screen frame buffer
         // (the default texture is (0,0), so this will happen on the first frame)
         if ((textureSize.getData()[0] != viewerDistortionTextureSize.getData()[0]) ||
-                (textureSize.getData()[1] != viewerDistortionTextureSize.getData()[1]))
-        {
+                (textureSize.getData()[1] != viewerDistortionTextureSize.getData()[1])) {
             // bind the texture
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, viewerDistortionColourID[0]);
 
@@ -463,8 +440,7 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer
     }
 
 
-    void performViewerDistortion(Vec4I screenViewport, Mesh distoMesh)
-    {
+    void performViewerDistortion(Vec4I screenViewport, Mesh distoMesh) {
         // Render the off-screen buffer to the screen using the texture
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
         GLES20.glViewport(screenViewport.getData()[0], screenViewport.getData()[1], screenViewport.getData()[2], screenViewport.getData()[3]);
@@ -510,10 +486,8 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer
         // Bind the video bg texture and get the Texture ID from Vuforia
         GLTextureUnit tex = new GLTextureUnit();
         tex.setTextureUnit(vbVideoTextureUnit);
-        if (viewId != VIEW.VIEW_RIGHTEYE )
-        {
-            if (!Renderer.getInstance().updateVideoBackgroundTexture(tex))
-            {
+        if (viewId != VIEW.VIEW_RIGHTEYE ) {
+            if (!Renderer.getInstance().updateVideoBackgroundTexture(tex)) {
                 Log.e(LOGTAG, "Unable to bind video background texture");
                 return;
             }
@@ -555,16 +529,14 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer
         }
 
 
-        if(Device.getInstance().isViewerActive())
-        {
+        if(Device.getInstance().isViewerActive()) {
             GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
         }
 
     }
 
 
-    private void renderVRWorld(float[] devicePose, float[] projectionMatrix)
-    {
+    private void renderVRWorld(float[] devicePose, float[] projectionMatrix) {
         float modelViewMatrix[]  = new float[16];
         float worldInitialPositionMatrix[] = new float[16];
         float mvpMatrix[] = new float[16];
@@ -586,8 +558,7 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer
 
     }
 
-    private void renderVideoBackground(int viewId, int[] viewport, int vbVideoTextureUnit)
-    {
+    private void renderVideoBackground(int viewId, int[] viewport, int vbVideoTextureUnit) {
         float[] vbProjectionMatrix = Tool.convert2GLMatrix(
             renderingPrimitives.getVideoBackgroundProjectionMatrix(viewId, COORDINATE_SYSTEM_TYPE.COORDINATE_SYSTEM_CAMERA)).getData();
 
@@ -595,8 +566,7 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer
         // so that the display lines up with the real world
         // This should not be applied on optical see-through devices, as there is no video background,
         // and the calibration ensures that the augmentation matches the real world
-        if (Device.getInstance().isViewerActive())
-        {
+        if (Device.getInstance().isViewerActive()) {
             float sceneScaleFactor = getSceneScaleFactor(viewId);
             Matrix.scaleM(vbProjectionMatrix, 0, sceneScaleFactor, sceneScaleFactor, 1.0f);
 
@@ -637,8 +607,7 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer
         SampleUtils.checkGLError("Rendering of the video background failed");
     }
 
-    float getSceneScaleFactor(int viewId)
-    {
+    float getSceneScaleFactor(int viewId) {
         // Get the y-dimension of the physical camera field of view
         Vec2F fovVector = CameraDevice.getInstance().getCameraCalibration().getFieldOfViewRads();
         float cameraFovYRads = fovVector.getData()[1];
@@ -664,10 +633,8 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer
     }
 
 
-    public void setTextures(Vector<Texture> textures)
-    {
+    public void setTextures(Vector<Texture> textures) {
         mTextures = textures;
-
     }
 
 }
