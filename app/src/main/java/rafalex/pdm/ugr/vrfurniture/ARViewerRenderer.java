@@ -79,7 +79,7 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer {
     private int vbTexCoordHandle          = 0;
     private int vbProjectionMatrixHandle;
 
-    private SampleApplicationV3DModel mMountainModelVR;
+    private ObjectLoaded mObjectToShow;
     private SampleApplicationV3DModel mMountainModelAR;
 
     private Renderer mRenderer;
@@ -87,8 +87,6 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer {
     private boolean isARObjectVisible = false;
 
     boolean mIsActive = false;
-
-    boolean mIsVR = false;
 
     // View matrix corresponding to device pose in the virtual world:
     Matrix34F deviceViewMatrix;
@@ -109,8 +107,6 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer {
 
         interactionViewMatrix = SampleMath.Matrix44FIdentity();
         deviceViewMatrix = new Matrix34F();
-
-        mIsVR = false;
     }
 
 
@@ -227,9 +223,6 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer {
         }
 
         try {
-            mMountainModelVR = new SampleApplicationV3DModel();
-            mMountainModelVR.loadModel(mActivity.getResources().getAssets(),
-                    "ARVR/Mountain_VR.v3d");
 
             mMountainModelAR = new SampleApplicationV3DModel();
             mMountainModelAR.loadModel(mActivity.getResources().getAssets(),
@@ -272,10 +265,7 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer {
         GLES20.glEnable(GLES20.GL_CULL_FACE);
         GLES20.glCullFace(GLES20.GL_BACK);
 
-        if(mIsVR && viewList.contains(VIEW.VIEW_SINGULAR))
-            GLES20.glClearColor(skyColor[0], skyColor[1], skyColor[2], skyColor[3]);
-        else
-            GLES20.glClearColor(0, 0, 0, 1);
+        GLES20.glClearColor(0, 0, 0, 1);
 
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
@@ -288,11 +278,7 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer {
             distortForViewer = prepareViewerDistortion(textureSize);
         }
 
-        // clear the offscreen texture
-        if (mIsVR)
-            GLES20.glClearColor(skyColor[0], skyColor[1], skyColor[2], skyColor[3]);
-        else
-            GLES20.glClearColor(0, 0, 0, 1);
+        GLES20.glClearColor(0, 0, 0, 1);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
         // stereo rendering
@@ -322,46 +308,22 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer {
 
                 float projectionMatrix[] = new float[16];
 
-                if (mIsVR) {
-                    Matrix34F projMatrix = renderingPrimitives.getProjectionMatrix(viewID, COORDINATE_SYSTEM_TYPE.COORDINATE_SYSTEM_WORLD);
+                //Display model
+                Matrix34F projMatrix = renderingPrimitives.getProjectionMatrix(viewID, COORDINATE_SYSTEM_TYPE.COORDINATE_SYSTEM_CAMERA);
 
-                    float rawProjectionMatrixGL[] = Tool.convertPerspectiveProjection2GLMatrix(
-                            projMatrix,
-                            VuforiaApplicationSession.NEAR_PLANE,
-                            VuforiaApplicationSession.FAR_PLANE)
-                            .getData();
+                float rawProjectionMatrixGL[] = Tool.convertPerspectiveProjection2GLMatrix(
+                        projMatrix,
+                        VuforiaApplicationSession.NEAR_PLANE,
+                        VuforiaApplicationSession.FAR_PLANE)
+                        .getData();
 
-                    // Apply the appropriate eye adjustment to the raw projection matrix, and assign to the global variable
-                    float eyeAdjustmentGL[] = Tool.convert2GLMatrix(renderingPrimitives
-                            .getEyeDisplayAdjustmentMatrix(viewID)).getData();
+                // Apply the appropriate eye adjustment to the raw projection matrix, and assign to the global variable
+                float eyeAdjustmentGL[] = Tool.convert2GLMatrix(renderingPrimitives
+                        .getEyeDisplayAdjustmentMatrix(viewID)).getData();
 
-                    Matrix.multiplyMM(projectionMatrix, 0, rawProjectionMatrixGL, 0, eyeAdjustmentGL, 0);
+                Matrix.multiplyMM(projectionMatrix, 0, rawProjectionMatrixGL, 0, eyeAdjustmentGL, 0);
 
-                    Matrix44F devicePose = Tool
-                            .convertPose2GLMatrix(deviceViewMatrix);
-
-                    // transform device pose transformation to a view matrix
-                    Matrix44F deviceViewPose = SampleMath.Matrix44FTranspose(SampleMath.Matrix44FInverse(devicePose));
-
-                    renderVRWorld(deviceViewPose.getData(), projectionMatrix);
-                }
-                else {
-                    Matrix34F projMatrix = renderingPrimitives.getProjectionMatrix(viewID, COORDINATE_SYSTEM_TYPE.COORDINATE_SYSTEM_CAMERA);
-
-                    float rawProjectionMatrixGL[] = Tool.convertPerspectiveProjection2GLMatrix(
-                            projMatrix,
-                            VuforiaApplicationSession.NEAR_PLANE,
-                            VuforiaApplicationSession.FAR_PLANE)
-                            .getData();
-
-                    // Apply the appropriate eye adjustment to the raw projection matrix, and assign to the global variable
-                    float eyeAdjustmentGL[] = Tool.convert2GLMatrix(renderingPrimitives
-                            .getEyeDisplayAdjustmentMatrix(viewID)).getData();
-
-                    Matrix.multiplyMM(projectionMatrix, 0, rawProjectionMatrixGL, 0, eyeAdjustmentGL, 0);
-
-                    renderARWorld(interactionViewMatrix.getData(), projectionMatrix, viewID, viewport.getData(), isARObjectVisible);
-                }
+                renderARWorld(interactionViewMatrix.getData(), projectionMatrix, viewID, viewport.getData(), isARObjectVisible);
 
                 // disable scissor test
                 GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
@@ -532,29 +494,6 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer {
         if(Device.getInstance().isViewerActive()) {
             GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
         }
-
-    }
-
-
-    private void renderVRWorld(float[] devicePose, float[] projectionMatrix) {
-        float modelViewMatrix[]  = new float[16];
-        float worldInitialPositionMatrix[] = new float[16];
-        float mvpMatrix[] = new float[16];
-
-        GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT);
-        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-        GLES20.glEnable(GLES20.GL_CULL_FACE);
-        GLES20.glCullFace(GLES20.GL_BACK);
-
-        Matrix.setIdentityM(worldInitialPositionMatrix, 0);
-        Matrix.translateM(worldInitialPositionMatrix, 0, 0, -1.7f, 0); // Translate 1.7 meters since it is the average human height
-        Matrix.rotateM(worldInitialPositionMatrix, 0, -90, 1, 0, 0);
-        Matrix.scaleM(worldInitialPositionMatrix,0,.5f,.5f,.5f);
-
-        Matrix.multiplyMM(modelViewMatrix, 0, devicePose, 0, worldInitialPositionMatrix,0);
-
-        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0);
-        mMountainModelVR.render(modelViewMatrix, mvpMatrix);
 
     }
 

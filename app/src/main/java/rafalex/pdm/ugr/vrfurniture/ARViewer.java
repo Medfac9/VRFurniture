@@ -70,11 +70,6 @@ public class ARViewer extends Activity implements VuforiaApplicationControl {
 
     // Alert Dialog used to display SDK errors
     private AlertDialog mErrorDialog;
-
-    private static boolean OPTIMIZE_VR = true;
-
-    boolean mIsStereo = true;
-    boolean mIsVR = false;
     
     // Called when the activity first starts or the user navigates back to an
     // activity.
@@ -251,13 +246,10 @@ public class ARViewer extends Activity implements VuforiaApplicationControl {
         mGlView = new SampleApplicationGLView(this);
         mGlView.init(translucent, depthSize, stencilSize);
 
-        //DEFINE SI ES AR O VR Y SI TIENE VISOR
-        mIsStereo = true;
         int deviceMode = Device.MODE.MODE_AR;
-        mIsVR = false;
 
         Device device = Device.getInstance();
-        device.setViewerActive(mIsStereo); // Indicates if the app will be using a viewer, stereo mode and initializes the rendering primitives
+        device.setViewerActive(true); // Indicates if the app will be using a viewer, stereo mode and initializes the rendering primitives
         device.setMode(deviceMode); // Select if we will be in AR or VR mode
 
         mRenderer = new ARViewerRenderer(this, vuforiaAppSession);
@@ -301,7 +293,7 @@ public class ARViewer extends Activity implements VuforiaApplicationControl {
         if (mDataset == null)
             return false;
 
-        if (!mDataset.load("Stones.xml", STORAGE_TYPE.STORAGE_APPRESOURCE))
+        if (!mDataset.load("TarjetaMueble.xml", STORAGE_TYPE.STORAGE_APPRESOURCE))
             return false;
 
         if (!objectTracker.activateDataSet(mDataset))
@@ -376,10 +368,6 @@ public class ARViewer extends Activity implements VuforiaApplicationControl {
             boolean result = CameraDevice.getInstance().setFocusMode(
                 CameraDevice.FOCUS_MODE.FOCUS_MODE_CONTINUOUSAUTO);
 
-            if(mIsVR && OPTIMIZE_VR) {
-                CameraDevice.getInstance().stop(); // In VR we don't need the camera feed since we are not tracking objects
-            }
-
         } else {
             Log.e(LOGTAG, exception.getString());
             showInitializationErrorMessage(exception.getString());
@@ -449,10 +437,7 @@ public class ARViewer extends Activity implements VuforiaApplicationControl {
         }
         else {
             // Set correction model to head if using viewer otherwise handheld
-            if (mIsStereo)
-                deviceTracker.setModelCorrection(deviceTracker.getDefaultHeadModel());
-            else
-                deviceTracker.setModelCorrection(deviceTracker.getDefaultHandheldModel());
+            deviceTracker.setModelCorrection(deviceTracker.getDefaultHeadModel());
 
             TransformModel model = deviceTracker.getModelCorrection();
             if (model == null) {
@@ -487,31 +472,18 @@ public class ARViewer extends Activity implements VuforiaApplicationControl {
         // Indicate if the trackers were started correctly
         boolean result = true;
 
-        // We do not start the object tracker if in VR mode since we do not have interaction with any target in the VR scene, this way we save up some processing time
-        if(!mIsVR || !OPTIMIZE_VR) {
-            Tracker objectTracker = TrackerManager.getInstance().getTracker(
-                    ObjectTracker.getClassType());
-            if (objectTracker != null)
-                objectTracker.start();
-        }
+        Tracker objectTracker = TrackerManager.getInstance().getTracker(
+                ObjectTracker.getClassType());
+        if (objectTracker != null)
+            objectTracker.start();
 
         // If in VR mode we start the rotational tracker to get the rotation pose in the renderer
         RotationalDeviceTracker deviceTracker = (RotationalDeviceTracker) TrackerManager.getInstance().getTracker(
                 RotationalDeviceTracker.getClassType());
 
-        if(mIsVR) {
-            if (deviceTracker != null) {
-                if (deviceTracker.start()) {
-                    Log.d(LOGTAG, "Successfully started Device Tracker.");
-                } else {
-                    Log.d(LOGTAG, "Failed to start Device Tracker.");
-                }
-            }
-        }
-
         // Enable pose prediction if in VR mode
         if (deviceTracker != null)
-            deviceTracker.setPosePrediction(mIsVR);
+            deviceTracker.setPosePrediction(false);
         
         return result;
     }
