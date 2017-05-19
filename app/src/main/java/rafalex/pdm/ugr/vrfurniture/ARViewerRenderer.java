@@ -103,18 +103,15 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer
     private static final float AR_OBJECT_SCALE_FLOAT = 0.025f;
 
 
-    public ARViewerRenderer(ARViewer activity,
-                            SampleApplicationSession session, APP_MODE appMode)
-    {
+    public ARViewerRenderer(ARViewer activity, SampleApplicationSession session) {
+
         mActivity = activity;
         vuforiaAppSession = session;
 
         interactionViewMatrix = SampleMath.Matrix44FIdentity();
         deviceViewMatrix = new Matrix34F();
 
-        if(appMode == APP_MODE.VIEWER_VR || appMode == APP_MODE.HANDHELD_VR) {
-            mIsVR = true;
-        }
+        mIsVR = true;
     }
 
 

@@ -263,27 +263,16 @@ public class ARViewer extends Activity implements SampleApplicationControl {
         mGlView = new SampleApplicationGLView(this);
         mGlView.init(translucent, depthSize, stencilSize);
 
-        Bundle extras = getIntent().getExtras();
-        APP_MODE appMode = (APP_MODE) extras.get("APP_MODE");
-
-        mIsStereo = false;
-        if(appMode == APP_MODE.VIEWER_AR || appMode == APP_MODE.VIEWER_VR)
-            mIsStereo = true;
-
+        //DEFINE SI ES AR O VR Y SI TIENE VISOR
+        mIsStereo = true;
         int deviceMode = Device.MODE.MODE_AR;
-        if(appMode == APP_MODE.HANDHELD_VR || appMode == APP_MODE.VIEWER_VR)
-        {
-            deviceMode = Device.MODE.MODE_VR;
-            mIsVR = true;
-        } else {
-            mIsVR = false;
-        }
+        mIsVR = false;
 
         Device device = Device.getInstance();
         device.setViewerActive(mIsStereo); // Indicates if the app will be using a viewer, stereo mode and initializes the rendering primitives
         device.setMode(deviceMode); // Select if we will be in AR or VR mode
 
-        mRenderer = new ARViewerRenderer(this, vuforiaAppSession, appMode);
+        mRenderer = new ARViewerRenderer(this, vuforiaAppSession);
         mRenderer.setTextures(mTextures);
         mGlView.setRenderer(mRenderer);
         mGlView.setPreserveEGLContextOnPause(true);
