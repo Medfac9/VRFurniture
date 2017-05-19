@@ -153,6 +153,8 @@ public class ARViewer extends Activity implements VuforiaApplicationControl {
     // for rendering.
     
     private void loadTextures() {
+        mTextures.add(Texture.loadTextureFromApk("pig.png", getAssets()));
+        mTextures.add(Texture.loadTextureFromApk("TextureTeapotRed.png", getAssets()));
     }
     
     
@@ -293,6 +295,7 @@ public class ARViewer extends Activity implements VuforiaApplicationControl {
         if (mDataset == null)
             return false;
 
+        //ESTABLECE LA IMAGEN SOBRA LA QUE SE RECONOCE
         if (!mDataset.load("TarjetaMueble.xml", STORAGE_TYPE.STORAGE_APPRESOURCE))
             return false;
 

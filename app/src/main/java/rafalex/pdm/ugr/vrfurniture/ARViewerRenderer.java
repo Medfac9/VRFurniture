@@ -57,6 +57,11 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer {
     private Vector<Texture> mTextures;
 
     int shaderProgramID;
+    private int vertexHandle;
+    private int normalHandle;
+    private int textureCoordHandle;
+    private int mvpMatrixHandle;
+    private int texSampler2DHandle;
 
     // Textures to render the video and augmentation properly in the FBO
     Vec2I viewerDistortionTextureSize = new Vec2I(0,0);
@@ -79,8 +84,7 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer {
     private int vbTexCoordHandle          = 0;
     private int vbProjectionMatrixHandle;
 
-    private ObjectLoaded mObjectToShow;
-    private SampleApplicationV3DModel mMountainModelAR;
+    private OBJModel mObjectToShow = null;
 
     private Renderer mRenderer;
 
@@ -97,7 +101,7 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer {
     // Sky color of the VR world
     float skyColor[] = {0.4f, 0.5f, 0.6f, 1.0f};
 
-    private static final float AR_OBJECT_SCALE_FLOAT = 0.025f;
+    private static final float AR_OBJECT_SCALE_FLOAT = 0.005f;
 
 
     public ARViewerRenderer(ARViewer activity, VuforiaApplicationSession session) {
@@ -162,22 +166,29 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer {
         for (Texture t : mTextures) {
             GLES20.glGenTextures(1, t.mTextureID, 0);
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, t.mTextureID[0]);
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
                     GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
                     GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
-                    GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
-                    GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
             GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA,
-                t.mWidth, t.mHeight, 0, GLES20.GL_RGBA,
+                    t.mWidth, t.mHeight, 0, GLES20.GL_RGBA,
                     GLES20.GL_UNSIGNED_BYTE, t.mData);
         }
 
         shaderProgramID = SampleUtils.createProgramFromShaderSrc(
                 CubeShaders.CUBE_MESH_VERTEX_SHADER,
                 CubeShaders.CUBE_MESH_FRAGMENT_SHADER);
+
+        vertexHandle = GLES20.glGetAttribLocation(shaderProgramID,
+                "vertexPosition");
+        normalHandle = GLES20.glGetAttribLocation(shaderProgramID,
+                "vertexNormal");
+        textureCoordHandle = GLES20.glGetAttribLocation(shaderProgramID,
+                "vertexTexCoord");
+        mvpMatrixHandle = GLES20.glGetUniformLocation(shaderProgramID,
+                "modelViewProjectionMatrix");
+        texSampler2DHandle = GLES20.glGetUniformLocation(shaderProgramID,
+                "texSampler2D");
 
         vbShaderProgramID = SampleUtils.createProgramFromShaderSrc(BackgroundShader.VB_VERTEX_SHADER,
                 BackgroundShader.VB_FRAGMENT_SHADER);
@@ -223,11 +234,9 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer {
         }
 
         try {
-
-            mMountainModelAR = new SampleApplicationV3DModel();
-            mMountainModelAR.loadModel(mActivity.getResources().getAssets(),
-                    "ARVR/Mountain_AR.v3d");
+            mObjectToShow = ObjLoader.LoadOBJ(mActivity, "pig.obj");
         } catch (IOException e) {
+            mObjectToShow = null;
             Log.e(LOGTAG, "Unable to load models");
         }
 
@@ -448,11 +457,10 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer {
         // Bind the video bg texture and get the Texture ID from Vuforia
         GLTextureUnit tex = new GLTextureUnit();
         tex.setTextureUnit(vbVideoTextureUnit);
-        if (viewId != VIEW.VIEW_RIGHTEYE ) {
-            if (!Renderer.getInstance().updateVideoBackgroundTexture(tex)) {
-                Log.e(LOGTAG, "Unable to bind video background texture");
-                return;
-            }
+
+        if (!Renderer.getInstance().updateVideoBackgroundTexture(tex)) {
+            Log.e(LOGTAG, "Unable to bind video background texture");
+            return;
         }
 
         renderVideoBackground(viewId, viewport, vbVideoTextureUnit);
@@ -478,7 +486,6 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer {
             float[] modelViewProjection = new float[16];
 
             // deal with the modelview and projection matrices
-            Matrix.rotateM(targetPose, 0, 90, 1.0f, 0.0f, 0.0f);
             Matrix.translateM(targetPose, 0, 0.0f, 0.0f,
                     AR_OBJECT_SCALE_FLOAT);
             Matrix.scaleM(targetPose, 0, AR_OBJECT_SCALE_FLOAT,
@@ -486,7 +493,43 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer {
 
             Matrix.multiplyMM(modelViewProjection, 0, projectionMatrix, 0, targetPose, 0);
 
-            mMountainModelAR.render(targetPose, modelViewProjection);
+            if (mObjectToShow != null) {
+                GLES20.glUseProgram(shaderProgramID);
+
+                GLES20.glVertexAttribPointer(vertexHandle, 3, GLES20.GL_FLOAT,
+                        false, 0, mObjectToShow.getVertices());
+                GLES20.glEnableVertexAttribArray(vertexHandle);
+
+                GLES20.glVertexAttribPointer(normalHandle, 3, GLES20.GL_FLOAT,
+                        false, 0, mObjectToShow.getNormals());
+                GLES20.glEnableVertexAttribArray(normalHandle);
+
+                GLES20.glVertexAttribPointer(textureCoordHandle, 2,
+                        GLES20.GL_FLOAT, false, 0, mObjectToShow.getTexCoords());
+                GLES20.glEnableVertexAttribArray(textureCoordHandle);
+
+                if (mTextures.size() > 0) {
+                    // activate texture 0, bind it, and pass to shader
+                    GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+                    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextures.get(0).mTextureID[0]);
+                    GLES20.glUniform1i(texSampler2DHandle, 0);
+                }
+
+                // pass the model view matrix to the shader
+                GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, modelViewProjection, 0);
+
+                // finally draw the object
+                GLES20.glDrawElements(GLES20.GL_TRIANGLES,
+                        mObjectToShow.getNumObjectIndex(), GLES20.GL_UNSIGNED_SHORT,
+                        mObjectToShow.getIndices());
+
+                // disable the enabled arrays
+                GLES20.glDisableVertexAttribArray(vertexHandle);
+                GLES20.glDisableVertexAttribArray(normalHandle);
+                GLES20.glDisableVertexAttribArray(textureCoordHandle);
+
+                //mObjectToShow.render(targetPose, modelViewProjection);
+            }
 
         }
 
