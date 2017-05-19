@@ -3,4 +3,38 @@
     <string name="menu_help">Ayuda</string>
     <string name="ok_button">Aceptar</string>
     <string name="appDescription">Aplicación destinada para ayudar a tener una idea sobre como va a quedar un mueble (MEJORAR ESTO).</string>
+
+    //Strings para Vuforia
+    <string name="UPDATE_ERROR_AUTHORIZATION_FAILED_TITLE">Error de autorización</string>
+    <string name="UPDATE_ERROR_PROJECT_SUSPENDED_TITLE">Error de autorización</string>
+    <string name="UPDATE_ERROR_NO_NETWORK_CONNECTION_TITLE">Red invalida</string>
+    <string name="UPDATE_ERROR_SERVICE_NOT_AVAILABLE_TITLE">Servicio invalido</string>
+    <string name="UPDATE_ERROR_UPDATE_SDK_TITLE">Versión no soportada</string>
+    <string name="UPDATE_ERROR_TIMESTAMP_OUT_OF_RANGE_TITLE">Error de sincronización de reloj.</string>
+    <string name="UPDATE_ERROR_REQUEST_TIMEOUT_TITLE">Se ha cumplido el tiempo.</string>
+    <string name="UPDATE_ERROR_BAD_FRAME_QUALITY_TITLE">Imagen de baja calidad de la cámara.</string>
+    <string name="UPDATE_ERROR_UNKNOWN_TITLE">Servicio invalido.</string>
+    <string name="UPDATE_ERROR_AUTHORIZATION_FAILED_DESC">Las claves de acceso al servicio de reconocimiento de la nube son incorrectas o han caducado.</string>
+    <string name="UPDATE_ERROR_PROJECT_SUSPENDED_DESC">El servicio de reconocimiento de la nube ha sido suspendido.</string>
+    <string name="UPDATE_ERROR_NO_NETWORK_CONNECTION_DESC">Pr favor comprueba tu conexión a internet e inténtalo de nuevo.</string>
+    <string name="UPDATE_ERROR_SERVICE_NOT_AVAILABLE_DESC">El servicio está caido, Por favor inténtelo más tarde.</string>
+    <string name="UPDATE_ERROR_UPDATE_SDK_DESC">La aplicación está usando una versión de Vuforia no soportada.</string>
+    <string name="UPDATE_ERROR_TIMESTAMP_OUT_OF_RANGE_DESC">Por favor actualiza la fecha y la hora e intentalo de nuevo.</string>
+    <string name="UPDATE_ERROR_REQUEST_TIMEOUT_DESC">La solicitud de red ha caducado, comprueba tu conexión a Internet y vuelve a intentarlo.</string>
+    <string name="UPDATE_ERROR_BAD_FRAME_QUALITY_DESC">La cámara no tiene suficientes detalles. Vuelve a intentarlo más tarde.</string>
+    <string name="UPDATE_ERROR_UNKNOWN_DESC">El servicio está invalido, por favor intentelo de nuevo más tarde.</string>
+
+    <string name="INIT_ERROR">Error</string>
+    <string name="INIT_ERROR_DEVICE_NOT_SUPPORTED">Error al inicializar Vuforia. Este dispositivo no es compatible.</string>
+    <string name="INIT_ERROR_NO_CAMERA_ACCESS">Error al inicializar Vuforia. No se puede acceder a la cámara.</string>
+    <string name="INIT_LICENSE_ERROR_MISMATCH_KEY">La clave de la aplicación Vuforia no es válida para este producto. Consiga una clave válida, ingrese a su cuenta en developer.vuforia.com y elija el tipo de producto adecuado durante la creación del proyecto.</string>
+    <string name="INIT_LICENSE_ERROR_MISSING_KEY">Falta la clave de la aplicación de Vuforia. Por favor, obtenga una clave válida, ingrese a su cuenta en developer.vuforia.com y cree un nuevo proyecto.</string>
+    <string name="INIT_LICENSE_ERROR_INVALID_KEY">Clave utilizada no válida. Asegúrese de que utiliza una clave de aplicación de Vuforia válida.</string>
+    <string name="INIT_LICENSE_ERROR_NO_NETWORK_TRANSIENT">Incapaz de contactar con el servidor. Por favor, inténtelo de nuevo más tarde.</string>
+    <string name="INIT_LICENSE_ERROR_NO_NETWORK_PERMANENT">No hay red disponible. Asegúrese de que está conectado a Internet.</string>
+    <string name="INIT_LICENSE_ERROR_CANCELED_KEY">Esta clave de licencia de la aplicación se ha cancelado y ya no se puede utilizar. Por favor, obtenga una nueva clave de licencia.</string>
+    <string name="INIT_LICENSE_ERROR_PRODUCT_TYPE_MISMATCH">La clave de la aplicación Vuforia no es válida para este producto. Obtenga una clave válida, ingrese a su cuenta en developer.vuforia.com y elija el tipo de producto adecuado durante la creación del proyecto.</string>
+    <string name="INIT_LICENSE_ERROR_UNKNOWN_ERROR">Error al inicializar Vuforia.</string>
+    <string name="INIT_OBJECT_DATASET_NOT_FOUND_TITLE">Base de datos no encontrada.</string>
+    <string name="INIT_OBJECT_DATASET_NOT_FOUND">Escanear un objeto y cargar una base de datos.</string>
 </resources>
