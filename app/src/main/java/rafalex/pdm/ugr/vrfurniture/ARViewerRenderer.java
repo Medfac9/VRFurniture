@@ -234,7 +234,7 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer {
         }
 
         try {
-            mObjectToShow = ObjLoader.LoadOBJ(mActivity, "pig.obj");
+            mObjectToShow = ObjLoader.LoadOBJ(mActivity, "sillachica.obj");
         } catch (IOException e) {
             mObjectToShow = null;
             Log.e(LOGTAG, "Unable to load models");

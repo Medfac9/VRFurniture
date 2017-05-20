@@ -153,7 +153,6 @@ public class ARViewer extends Activity implements VuforiaApplicationControl {
     // for rendering.
     
     private void loadTextures() {
-        mTextures.add(Texture.loadTextureFromApk("pig.png", getAssets()));
         mTextures.add(Texture.loadTextureFromApk("TextureTeapotRed.png", getAssets()));
     }
     
