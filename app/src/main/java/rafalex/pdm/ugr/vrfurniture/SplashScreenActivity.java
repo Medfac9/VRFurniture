@@ -33,7 +33,7 @@ public class SplashScreenActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         //Quitamos barra de notificaciones
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+        //Esconder botones en el splash (solo para versiones superiores a kitkat)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             hideVirtualButtons();
         }
