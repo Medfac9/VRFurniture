@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Inicializamos los arrays de muebles
 
-        ArrayList<Integer> sillas = new ArrayList<Integer> (Arrays.asList(R.drawable.silla, R.drawable.silla2));
+        ArrayList<Integer> sillas = new ArrayList<Integer> (Arrays.asList(R.drawable.silla, R.drawable.silla2, R.drawable.sillaoficina));
         ArrayList<Integer> mesas = new ArrayList<Integer> (Arrays.asList(R.drawable.mesa, R.drawable.mesa1));
         ArrayList<Integer> armarios = new ArrayList<Integer> (Arrays.asList(R.drawable.armario));
         ArrayList<Integer> mesitas = new ArrayList<Integer> (Arrays.asList(R.drawable.mesita));
