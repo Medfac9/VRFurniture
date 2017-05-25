@@ -52,6 +52,8 @@ public class MuebleActivity extends AppCompatActivity {
 
         categoria = (Categoria) getIntent().getExtras().getSerializable("Categoria");
 
+        muebles.clear();
+
         for (int imgMueble : categoria.getImages())
             muebles.add(new Mueble(imgMueble));
 
