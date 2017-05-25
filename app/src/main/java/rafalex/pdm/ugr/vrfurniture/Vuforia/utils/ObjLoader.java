@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class ObjLoader {
 
-    
+
     //Carga un fichero obj sin tener en cuenta las normales
     public static OBJModel LoadOBJ (Context context, String fname) throws IOException {
 
@@ -42,53 +42,63 @@ public class ObjLoader {
 
                 String[] tempf = tempsa[1].split("[/]+");
                 vertexIndices.add((short) (Short.parseShort(tempf[0]) - 1));
-                textureIndices.add((short) (Short.parseShort(tempf[1]) - 1));
+                if (tempf.length > 1)
+                    textureIndices.add((short) (Short.parseShort(tempf[1]) - 1));
+
                 tempf = tempsa[2].split("[/]+");
                 vertexIndices.add((short) (Short.parseShort(tempf[0]) - 1));
-                textureIndices.add((short) (Short.parseShort(tempf[1]) - 1));
+                if (tempf.length > 1)
+                    textureIndices.add((short) (Short.parseShort(tempf[1]) - 1));
+
                 tempf = tempsa[3].split("[/]+");
                 vertexIndices.add((short) (Short.parseShort(tempf[0]) - 1));
-                textureIndices.add((short) (Short.parseShort(tempf[1]) - 1));
+                if (tempf.length > 1)
+                    textureIndices.add((short) (Short.parseShort(tempf[1]) - 1));
             }
         }
 
-        short [] indices = new short [vertexIndices.size()];
+
+        short[] indices = new short[vertexIndices.size()];
         duplicateVerts = (ArrayList<Vector3>) v.clone();
-        for (int i = 0; i < duplicateVerts.size(); i++)
-            duplicateTextureVerts.add(null);
+        if (textureIndices.size() > 0) {
+            for (int i = 0; i < duplicateVerts.size(); i++)
+                duplicateTextureVerts.add(null);
 
-        for (int i = 0; i < vertexIndices.size(); i++) {
+            for (int i = 0; i < vertexIndices.size(); i++) {
 
-            int vertex = vertexIndices.get(i);
-            int textureVertex = textureIndices.get(i);
+                int vertex = vertexIndices.get(i);
+                int textureVertex = textureIndices.get(i);
 
-            //Si el vertice no tiene asignado ninguna coordenada, la asigna.
-            if (duplicateTextureVerts.get(vertex) == null) {
-                duplicateTextureVerts.set(vertex, vt.get(textureVertex));
-                indices[i] = (short) vertex;
-            }
-            //Si el vertice ya tenia una coordenada asignada
-            else {
-
-                int indice = -1;
-                //Busca si la pareja vertice, coordenada ya ha sido añadida
-                for (int n = v.size(); n < duplicateVerts.size() && indice == -1; n++)
-                    if (duplicateVerts.get(n) == v.get(vertex))
-                        if (duplicateTextureVerts.get(n) == vt.get(textureVertex))
-                            indice = n;
-
-                //Si no la ha encontrado se añada un nuveo vertice y textura
-                if (indice == -1) {
-                    duplicateVerts.add(v.get(vertex));
-                    duplicateTextureVerts.add(vt.get(textureVertex));
-                    indice = duplicateVerts.size() - 1;
+                //Si el vertice no tiene asignado ninguna coordenada, la asigna.
+                if (duplicateTextureVerts.get(vertex) == null) {
+                    duplicateTextureVerts.set(vertex, vt.get(textureVertex));
+                    indices[i] = (short) vertex;
                 }
+                //Si el vertice ya tenia una coordenada asignada
+                else {
 
-                //Se actualizan los vertices
-                indices[i] = (short) indice;
+                    int indice = -1;
+                    //Busca si la pareja vertice, coordenada ya ha sido añadida
+                    for (int n = v.size(); n < duplicateVerts.size() && indice == -1; n++)
+                        if (duplicateVerts.get(n) == v.get(vertex))
+                            if (duplicateTextureVerts.get(n) == vt.get(textureVertex))
+                                indice = n;
+
+                    //Si no la ha encontrado se añada un nuveo vertice y textura
+                    if (indice == -1) {
+                        duplicateVerts.add(v.get(vertex));
+                        duplicateTextureVerts.add(vt.get(textureVertex));
+                        indice = duplicateVerts.size() - 1;
+                    }
+
+                    //Se actualizan los vertices
+                    indices[i] = (short) indice;
+                }
             }
-
         }
+        else
+            for (int i = 0; i < indices.length; i++)
+                indices[i] = vertexIndices.get(i);
 
         //Genera el objeto
 
@@ -148,61 +158,72 @@ public class ObjLoader {
 
                 String[] tempf = tempsa[1].split("[/]+");
                 vertexIndices.add((short) (Short.parseShort(tempf[0]) - 1));
-                textureIndices.add((short) (Short.parseShort(tempf[1]) - 1));
-                normalIndices.add((short) (Short.parseShort(tempf[2]) - 1));
+                if (tempf.length > 1)
+                    textureIndices.add((short) (Short.parseShort(tempf[1]) - 1));
+                if (tempf.length > 2)
+                    normalIndices.add((short) (Short.parseShort(tempf[2]) - 1));
+
                 tempf = tempsa[2].split("[/]+");
                 vertexIndices.add((short) (Short.parseShort(tempf[0]) - 1));
-                textureIndices.add((short) (Short.parseShort(tempf[1]) - 1));
-                normalIndices.add((short) (Short.parseShort(tempf[2]) - 1));
+                if (tempf.length > 1)
+                    textureIndices.add((short) (Short.parseShort(tempf[1]) - 1));
+                if (tempf.length > 2)
+                    normalIndices.add((short) (Short.parseShort(tempf[2]) - 1));
+
                 tempf = tempsa[3].split("[/]+");
                 vertexIndices.add((short) (Short.parseShort(tempf[0]) - 1));
-                textureIndices.add((short) (Short.parseShort(tempf[1]) - 1));
-                normalIndices.add((short) (Short.parseShort(tempf[2]) - 1));
+                if (tempf.length > 1)
+                    textureIndices.add((short) (Short.parseShort(tempf[1]) - 1));
+                if (tempf.length > 2)
+                    normalIndices.add((short) (Short.parseShort(tempf[2]) - 1));
             }
         }
 
-        short [] indices = new short [vertexIndices.size()];
+        short[] indices = new short[vertexIndices.size()];
         duplicateVerts = (ArrayList<Vector3>) v.clone();
-        for (int i = 0; i < duplicateVerts.size(); i++) {
-            duplicateTextureVerts.add(null);
-            duplicateNormals.add(null);
-        }
-
-        for (int i = 0; i < vertexIndices.size(); i++) {
-
-            int vertex = vertexIndices.get(i);
-            int textureVertex = textureIndices.get(i);
-            int normalVertex = normalIndices.get(i);
-
-            //Si el vertice no tiene asignado ninguna coordenada, la asigna.
-            if (duplicateTextureVerts.get(vertex) == null) {
-                duplicateTextureVerts.set(vertex, vt.get(textureVertex));
-                duplicateNormals.set(vertex, vn.get(normalVertex));
-                indices[i] = (short) vertex;
+        if (textureIndices.size() > 0 && normalIndices.size() > 0) {
+            for (int i = 0; i < duplicateVerts.size(); i++) {
+                duplicateTextureVerts.add(null);
+                duplicateNormals.add(null);
             }
-            //Si el vertice ya tenia una coordenada asignada
-            else {
 
-                int indice = -1;
-                //Busca si la pareja vertice, coordenada ya ha sido añadida
-                for (int n = v.size(); n < duplicateVerts.size() && indice == -1; n++)
-                    if (duplicateVerts.get(n) == v.get(vertex))
-                        if (duplicateTextureVerts.get(n) == vt.get(textureVertex) && duplicateNormals.get(n) == vn.get(normalVertex))
-                            indice = n;
+            for (int i = 0; i < vertexIndices.size(); i++) {
 
-                //Si no la ha encontrado se añada un nuveo vertice y textura
-                if (indice == -1) {
-                    duplicateVerts.add(v.get(vertex));
-                    duplicateNormals.add(vn.get(normalVertex));
-                    duplicateTextureVerts.add(vt.get(textureVertex));
-                    indice = duplicateVerts.size() - 1;
+                int vertex = vertexIndices.get(i);
+                int textureVertex = textureIndices.get(i);
+                int normalVertex = normalIndices.get(i);
+
+                //Si el vertice no tiene asignado ninguna coordenada, la asigna.
+                if (duplicateTextureVerts.get(vertex) == null) {
+                    duplicateTextureVerts.set(vertex, vt.get(textureVertex));
+                    duplicateNormals.set(vertex, vn.get(normalVertex));
+                    indices[i] = (short) vertex;
                 }
+                //Si el vertice ya tenia una coordenada asignada
+                else {
 
-                //Se actualizan los vertices
-                indices[i] = (short) indice;
+                    int indice = -1;
+                    //Busca si la pareja vertice, coordenada ya ha sido añadida
+                    for (int n = v.size(); n < duplicateVerts.size() && indice == -1; n++)
+                        if (duplicateVerts.get(n) == v.get(vertex))
+                            if (duplicateTextureVerts.get(n) == vt.get(textureVertex) && duplicateNormals.get(n) == vn.get(normalVertex))
+                                indice = n;
+
+                    //Si no la ha encontrado se añada un nuveo vertice y textura
+                    if (indice == -1) {
+                        duplicateVerts.add(v.get(vertex));
+                        duplicateNormals.add(vn.get(normalVertex));
+                        duplicateTextureVerts.add(vt.get(textureVertex));
+                        indice = duplicateVerts.size() - 1;
+                    }
+
+                    //Se actualizan los vertices
+                    indices[i] = (short) indice;
+                }
             }
-
-        }
+        }else
+            for (int i = 0; i < indices.length; i++)
+                indices[i] = vertexIndices.get(i);
 
         //Genera el objeto
 
