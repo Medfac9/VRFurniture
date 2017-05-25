@@ -52,10 +52,7 @@ public class MuebleActivity extends AppCompatActivity {
 
         categoria = (Categoria) getIntent().getExtras().getSerializable("Categoria");
 
-        muebles.clear();
-
-        for (int imgMueble : categoria.getImages())
-            muebles.add(new Mueble(imgMueble));
+        muebles = categoria.getMuebles();
 
         // Establece la vista, el adaptador y la funcion al hacer click de los elementos de la lista
         ListView pairedListView = (ListView) findViewById(R.id.mueble_selector);
@@ -70,7 +67,7 @@ public class MuebleActivity extends AppCompatActivity {
 
             // Inicia la siguiente acitividad.
             Intent i = new Intent(MuebleActivity.this, ARViewer.class);
-            //i.putExtra("Mueble", (Mueble) av.getItemAtPosition(position));
+            i.putExtra("Mueble", (Mueble) av.getItemAtPosition(position));
             startActivity(i);
         }
     };

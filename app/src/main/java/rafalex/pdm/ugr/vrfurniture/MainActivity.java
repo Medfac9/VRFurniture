@@ -44,10 +44,10 @@ public class MainActivity extends AppCompatActivity {
 
         //Inicializamos los arrays de muebles
 
-        ArrayList<Integer> sillas = new ArrayList<Integer> (Arrays.asList(R.drawable.silla, R.drawable.silla2, R.drawable.sillaoficina));
-        ArrayList<Integer> mesas = new ArrayList<Integer> (Arrays.asList(R.drawable.mesa, R.drawable.mesa1));
-        ArrayList<Integer> armarios = new ArrayList<Integer> (Arrays.asList(R.drawable.armario));
-        ArrayList<Integer> mesitas = new ArrayList<Integer> (Arrays.asList(R.drawable.mesita));
+        ArrayList<Mueble> sillas = new ArrayList<Mueble> (Arrays.asList(new Mueble(R.drawable.silla, "sillachica.obj", "lightWood.jpg"), new Mueble(R.drawable.silla2, "sillachica.obj", "lightWood.jpg")));
+        ArrayList<Mueble> mesas = new ArrayList<Mueble> (Arrays.asList(new Mueble(R.drawable.mesa, "sillachica.obj", "lightWood.jpg")));
+        ArrayList<Mueble> armarios = new ArrayList<Mueble> (Arrays.asList(new Mueble(R.drawable.armario, "armario_arancio.obj", "lightWood.jpg")));
+        ArrayList<Mueble> mesitas = new ArrayList<Mueble> (Arrays.asList(new Mueble(R.drawable.mesita, "sillachica.obj", "lightWood.jpg")));
 
         //Inicializamos el array de Categorias
         categorias.add(new Categoria("Sillas", sillas));

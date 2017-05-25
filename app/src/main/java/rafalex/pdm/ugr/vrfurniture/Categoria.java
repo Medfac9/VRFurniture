@@ -5,13 +5,13 @@ import java.util.ArrayList;
 
 public class Categoria implements Serializable {
 
-    private ArrayList<Integer> img_mueble = new ArrayList ();
+    private ArrayList<Mueble> muebles = new ArrayList ();
     private String nombre_mueble;
 
-    public Categoria(String nombre_mueble, ArrayList<Integer> img_mueble) {
+    public Categoria(String nombre_mueble, ArrayList<Mueble> muebles) {
 
         this.nombre_mueble = nombre_mueble;
-        this.img_mueble = img_mueble;
+        this.muebles = muebles;
     }
 
     public String getNombreMueble () {
@@ -21,12 +21,12 @@ public class Categoria implements Serializable {
 
     public int getImgMueble() {
 
-        return img_mueble.get(0);
+        return muebles.get(0).getMueble();
     }
 
-    public ArrayList<Integer> getImages () {
+    public ArrayList<Mueble> getMuebles () {
 
-        return img_mueble;
+        return muebles;
     }
 
 }

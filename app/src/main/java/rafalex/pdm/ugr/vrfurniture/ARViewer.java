@@ -68,6 +68,8 @@ public class ARViewer extends Activity implements VuforiaApplicationControl {
     
     LoadingDialogHandler loadingDialogHandler = new LoadingDialogHandler(this);
 
+    Mueble mueble;
+
     // Alert Dialog used to display SDK errors
     private AlertDialog mErrorDialog;
     
@@ -78,6 +80,8 @@ public class ARViewer extends Activity implements VuforiaApplicationControl {
 
         Log.d(LOGTAG, "onCreate");
         super.onCreate(savedInstanceState);
+
+        mueble = (Mueble) getIntent().getExtras().getSerializable("Mueble");
 
         View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -95,7 +99,7 @@ public class ARViewer extends Activity implements VuforiaApplicationControl {
         
         // Load any sample specific textures:
         mTextures = new Vector<Texture>();
-        loadTextures();
+        loadTextures(mueble.getTextura());
         
     }
     
@@ -152,8 +156,8 @@ public class ARViewer extends Activity implements VuforiaApplicationControl {
     // We want to load specific textures from the APK, which we will later use
     // for rendering.
     
-    private void loadTextures() {
-        mTextures.add(Texture.loadTextureFromApk("TextureTeapotRed.png", getAssets()));
+    private void loadTextures(String nombreTextura) {
+        mTextures.add(Texture.loadTextureFromApk(nombreTextura, getAssets()));
     }
     
     
@@ -253,7 +257,7 @@ public class ARViewer extends Activity implements VuforiaApplicationControl {
         device.setViewerActive(true); // Indicates if the app will be using a viewer, stereo mode and initializes the rendering primitives
         device.setMode(deviceMode); // Select if we will be in AR or VR mode
 
-        mRenderer = new ARViewerRenderer(this, vuforiaAppSession);
+        mRenderer = new ARViewerRenderer(this, vuforiaAppSession, mueble.getModelo());
         mRenderer.setTextures(mTextures);
         mGlView.setRenderer(mRenderer);
         mGlView.setPreserveEGLContextOnPause(true);

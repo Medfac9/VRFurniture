@@ -92,6 +92,8 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer {
 
     boolean mIsActive = false;
 
+    private String nombreMueble = "";
+
     // View matrix corresponding to device pose in the virtual world:
     Matrix34F deviceViewMatrix;
 
@@ -104,10 +106,11 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer {
     private static final float AR_OBJECT_SCALE_FLOAT = 0.005f;
 
 
-    public ARViewerRenderer(ARViewer activity, VuforiaApplicationSession session) {
+    public ARViewerRenderer(ARViewer activity, VuforiaApplicationSession session, String nombreMueble) {
 
         mActivity = activity;
         vuforiaAppSession = session;
+        this.nombreMueble = nombreMueble;
 
         interactionViewMatrix = SampleMath.Matrix44FIdentity();
         deviceViewMatrix = new Matrix34F();
@@ -234,7 +237,7 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer {
         }
 
         try {
-            mObjectToShow = ObjLoader.LoadOBJ(mActivity, "sillachica.obj");
+            mObjectToShow = ObjLoader.LoadOBJ(mActivity, nombreMueble);
         } catch (IOException e) {
             mObjectToShow = null;
             Log.e(LOGTAG, "Unable to load models");
