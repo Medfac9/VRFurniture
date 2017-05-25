@@ -503,9 +503,9 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer {
                         false, 0, mObjectToShow.getVertices());
                 GLES20.glEnableVertexAttribArray(vertexHandle);
 
-                GLES20.glVertexAttribPointer(normalHandle, 3, GLES20.GL_FLOAT,
+                /*GLES20.glVertexAttribPointer(normalHandle, 3, GLES20.GL_FLOAT,
                         false, 0, mObjectToShow.getNormals());
-                GLES20.glEnableVertexAttribArray(normalHandle);
+                GLES20.glEnableVertexAttribArray(normalHandle);*/
 
                 GLES20.glVertexAttribPointer(textureCoordHandle, 2,
                         GLES20.GL_FLOAT, false, 0, mObjectToShow.getTexCoords());
@@ -528,7 +528,7 @@ public class ARViewerRenderer implements GLSurfaceView.Renderer {
 
                 // disable the enabled arrays
                 GLES20.glDisableVertexAttribArray(vertexHandle);
-                GLES20.glDisableVertexAttribArray(normalHandle);
+                //GLES20.glDisableVertexAttribArray(normalHandle);
                 GLES20.glDisableVertexAttribArray(textureCoordHandle);
 
                 //mObjectToShow.render(targetPose, modelViewProjection);
