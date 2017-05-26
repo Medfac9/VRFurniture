@@ -44,10 +44,10 @@ public class MainActivity extends AppCompatActivity {
 
         //Inicializamos los arrays de muebles
 
-        ArrayList<Mueble> sillas = new ArrayList<Mueble> (Arrays.asList(new Mueble(R.drawable.silla, "sillachica.obj", "lightWood.jpg"), new Mueble(R.drawable.silla2, "sillachica.obj", "lightWood.jpg")));
-        ArrayList<Mueble> mesas = new ArrayList<Mueble> (Arrays.asList(new Mueble(R.drawable.mesa, "sillachica.obj", "lightWood.jpg")));
-        ArrayList<Mueble> armarios = new ArrayList<Mueble> (Arrays.asList(new Mueble(R.drawable.armario, "armario_arancio.obj", "lightWood.jpg")));
-        ArrayList<Mueble> mesitas = new ArrayList<Mueble> (Arrays.asList(new Mueble(R.drawable.mesita, "sillachica.obj", "lightWood.jpg")));
+        ArrayList<Mueble> sillas = new ArrayList<Mueble> (Arrays.asList(new Mueble(R.drawable.chair2, "chair2.obj", "Textile3.jpg"), new Mueble(R.drawable.chair4, "chair4.obj", "tipical.jpg")));
+        ArrayList<Mueble> mesas = new ArrayList<Mueble> (Arrays.asList(new Mueble(R.drawable.black_table, "black_table.obj", "wood_bump.jpg"), new Mueble(R.drawable.mesa_marmol, "table_granmother_marble.obj", "marble.jpg")));
+        ArrayList<Mueble> armarios = new ArrayList<Mueble> (Arrays.asList(new Mueble(R.drawable.armario, "armario_arancio.obj", "lightWood.jpg"), new Mueble(R.drawable.armoire_lotus, "armoireLotus.obj", "armoireLotus_hetrenoir.png")));
+        ArrayList<Mueble> mesitas = new ArrayList<Mueble> (Arrays.asList(new Mueble(R.drawable.comodino_azurro, "comodinoArancio.obj", "lightWoodAzul.jpg"), new Mueble(R.drawable.comodino_arancio, "comodinoArancio.obj", "lightWood.jpg")));
 
         //Inicializamos el array de Categorias
         categorias.add(new Categoria("Sillas", sillas));
