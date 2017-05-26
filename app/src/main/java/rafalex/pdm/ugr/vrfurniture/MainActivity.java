@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+
 public class MainActivity extends AppCompatActivity {
 
     private final int MY_PERMISSIONS_REQUEST_CAMERA = 123;
@@ -76,8 +78,15 @@ public class MainActivity extends AppCompatActivity {
 
         // Establece la vista, el adaptador y la funcion al hacer click de los elementos de la lista
         ListView pairedListView = (ListView) findViewById(R.id.categoria_selector);
+
         pairedListView.setAdapter(new CategoriaAdapter(categorias));
         pairedListView.setOnItemClickListener(CategoriaClickListener);
+
+        if(getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
+            ListView pairedListView1 = (ListView) findViewById(R.id.categoria_selector1);
+            pairedListView1.setAdapter(new CategoriaAdapter(categorias));
+            pairedListView1.setOnItemClickListener(CategoriaClickListener);
+        }
 
         //Pedimos los permisos necesarios al usuario
         if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)

@@ -14,6 +14,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import java.util.ArrayList;
 
+import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+
 
 public class MuebleActivity extends AppCompatActivity {
 
@@ -56,9 +58,16 @@ public class MuebleActivity extends AppCompatActivity {
 
         // Establece la vista, el adaptador y la funcion al hacer click de los elementos de la lista
         ListView pairedListView = (ListView) findViewById(R.id.mueble_selector);
+
         pairedListView.setAdapter(new MuebleAdapter(muebles));
         pairedListView.setOnItemClickListener(MuebleClickListener);
 
+
+        if(getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
+            ListView pairedListView1 = (ListView) findViewById(R.id.mueble_selector1);
+            pairedListView1.setAdapter(new MuebleAdapter(muebles));
+            pairedListView1.setOnItemClickListener(MuebleClickListener);
+        }
     }
 
     // OnItemClickListener para las imágenes de la lista
