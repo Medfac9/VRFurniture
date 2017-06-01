@@ -14,7 +14,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,6 +73,27 @@ public class MainActivity extends AppCompatActivity {
         ((TextView) dialogView.findViewById(R.id.helpText)).setText(R.string.appDescription);
     }
 
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null)
+            return;
+
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+        int totalHeight = 0;
+        View view = null;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            view = listAdapter.getView(i, view, listView);
+            if (i == 0)
+                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, AbsListView.LayoutParams.WRAP_CONTENT));
+
+            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += view.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+    }
+
     //Función Resume de la actividad
     @Override
     public void onResume() {
@@ -78,12 +102,14 @@ public class MainActivity extends AppCompatActivity {
 
         // Establece la vista, el adaptador y la funcion al hacer click de los elementos de la lista
         ListView pairedListView = (ListView) findViewById(R.id.categoria_selector);
+        setListViewHeightBasedOnChildren(pairedListView);
 
         pairedListView.setAdapter(new CategoriaAdapter(categorias));
         pairedListView.setOnItemClickListener(CategoriaClickListener);
 
         if(getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
             ListView pairedListView1 = (ListView) findViewById(R.id.categoria_selector1);
+            setListViewHeightBasedOnChildren(pairedListView1);
             pairedListView1.setAdapter(new CategoriaAdapter(categorias));
             pairedListView1.setOnItemClickListener(CategoriaClickListener);
         }

@@ -9,7 +9,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import java.util.ArrayList;
@@ -46,6 +49,27 @@ public class MuebleActivity extends AppCompatActivity {
         ((TextView) dialogView.findViewById(R.id.helpText)).setText(R.string.appDescription);
     }
 
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null)
+            return;
+
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+        int totalHeight = 0;
+        View view = null;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            view = listAdapter.getView(i, view, listView);
+            if (i == 0)
+                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, AbsListView.LayoutParams.WRAP_CONTENT));
+
+            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += view.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+    }
+
     //Función Resume de la actividad
     @Override
     public void onResume() {
@@ -58,6 +82,7 @@ public class MuebleActivity extends AppCompatActivity {
 
         // Establece la vista, el adaptador y la funcion al hacer click de los elementos de la lista
         ListView pairedListView = (ListView) findViewById(R.id.mueble_selector);
+        setListViewHeightBasedOnChildren(pairedListView);
 
         pairedListView.setAdapter(new MuebleAdapter(muebles));
         pairedListView.setOnItemClickListener(MuebleClickListener);
@@ -65,6 +90,7 @@ public class MuebleActivity extends AppCompatActivity {
 
         if(getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
             ListView pairedListView1 = (ListView) findViewById(R.id.mueble_selector1);
+            setListViewHeightBasedOnChildren(pairedListView1);
             pairedListView1.setAdapter(new MuebleAdapter(muebles));
             pairedListView1.setOnItemClickListener(MuebleClickListener);
         }
