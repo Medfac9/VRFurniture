@@ -78,8 +78,6 @@ public class MuebleActivity extends AppCompatActivity {
 
         super.onResume();
 
-        System.out.println ("RESUME");
-
         categoria = (Categoria) getIntent().getExtras().getSerializable("Categoria");
 
         muebles = categoria.getMuebles();
