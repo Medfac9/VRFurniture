@@ -60,6 +60,20 @@ public class MainActivity extends AppCompatActivity {
         categorias.add(new Categoria("Armario", armarios));
         categorias.add(new Categoria("Mesitas", mesitas));
 
+        // Establece la vista, el adaptador y la funcion al hacer click de los elementos de la lista
+        ListView pairedListView = (ListView) findViewById(R.id.categoria_selector);
+        setListViewHeightBasedOnChildren(pairedListView);
+
+        pairedListView.setAdapter(new CategoriaAdapter(categorias));
+        pairedListView.setOnItemClickListener(CategoriaClickListener);
+
+        if(getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
+            ListView pairedListView1 = (ListView) findViewById(R.id.categoria_selector1);
+            setListViewHeightBasedOnChildren(pairedListView1);
+            pairedListView1.setAdapter(new CategoriaAdapter(categorias));
+            pairedListView1.setOnItemClickListener(CategoriaClickListener);
+        }
+
         //Crea los dialogos
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.help_dialog, null);
