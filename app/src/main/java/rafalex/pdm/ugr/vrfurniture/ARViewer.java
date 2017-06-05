@@ -438,13 +438,13 @@ public class ARViewer extends Activity implements VuforiaApplicationControl {
         }
 
         RotationalDeviceTracker deviceTracker = (RotationalDeviceTracker) tManager.initTracker(RotationalDeviceTracker.getClassType());
-        if (deviceTracker == null && !mIsStereo) {
+        if (deviceTracker == null && mIsStereo) {
             Log.e(
                     LOGTAG,
                     "Rotational Device Tracker not initialized. Tracker already initialized or the camera is already started");
             result = false;
         }
-        else if (deviceTracker == null){
+        else if (deviceTracker != null){
 
             // Set correction model to head if using viewer otherwise handheld
             if (mIsStereo)

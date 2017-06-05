@@ -159,6 +159,7 @@ public class MuebleActivity extends AppCompatActivity {
             }
 
             estado_boton_cardboard.commit();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
