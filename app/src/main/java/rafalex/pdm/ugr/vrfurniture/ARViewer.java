@@ -68,6 +68,8 @@ public class ARViewer extends Activity implements VuforiaApplicationControl {
     
     LoadingDialogHandler loadingDialogHandler = new LoadingDialogHandler(this);
 
+    boolean mIsStereo = false;
+
     Mueble mueble;
 
     // Alert Dialog used to display SDK errors
@@ -82,6 +84,7 @@ public class ARViewer extends Activity implements VuforiaApplicationControl {
         super.onCreate(savedInstanceState);
 
         mueble = (Mueble) getIntent().getExtras().getSerializable("Mueble");
+        mIsStereo = getIntent().getExtras().getBoolean("Cardboard");
 
         View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -254,7 +257,7 @@ public class ARViewer extends Activity implements VuforiaApplicationControl {
         int deviceMode = Device.MODE.MODE_AR;
 
         Device device = Device.getInstance();
-        device.setViewerActive(true); // Indicates if the app will be using a viewer, stereo mode and initializes the rendering primitives
+        device.setViewerActive(mIsStereo); // Indicates if the app will be using a viewer, stereo mode and initializes the rendering primitives
         device.setMode(deviceMode); // Select if we will be in AR or VR mode
 
         mRenderer = new ARViewerRenderer(this, vuforiaAppSession, mueble.getModelo());
@@ -435,15 +438,19 @@ public class ARViewer extends Activity implements VuforiaApplicationControl {
         }
 
         RotationalDeviceTracker deviceTracker = (RotationalDeviceTracker) tManager.initTracker(RotationalDeviceTracker.getClassType());
-        if (deviceTracker == null) {
+        if (deviceTracker == null && !mIsStereo) {
             Log.e(
                     LOGTAG,
                     "Rotational Device Tracker not initialized. Tracker already initialized or the camera is already started");
             result = false;
         }
-        else {
+        else if (deviceTracker == null){
+
             // Set correction model to head if using viewer otherwise handheld
-            deviceTracker.setModelCorrection(deviceTracker.getDefaultHeadModel());
+            if (mIsStereo)
+                deviceTracker.setModelCorrection(deviceTracker.getDefaultHeadModel());
+            else
+                deviceTracker.setModelCorrection(deviceTracker.getDefaultHandheldModel());
 
             TransformModel model = deviceTracker.getModelCorrection();
             if (model == null) {

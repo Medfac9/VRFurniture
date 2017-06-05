@@ -104,6 +104,7 @@ public class MuebleActivity extends AppCompatActivity {
             // Inicia la siguiente acitividad.
             Intent i = new Intent(MuebleActivity.this, ARViewer.class);
             i.putExtra("Mueble", (Mueble) av.getItemAtPosition(position));
+            i.putExtra("Cardboard", true);
             startActivity(i);
         }
     };
