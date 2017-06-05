@@ -76,23 +76,24 @@ public class MuebleActivity extends AppCompatActivity {
 
         super.onResume();
 
+        System.out.println ("RESUME");
+
         categoria = (Categoria) getIntent().getExtras().getSerializable("Categoria");
 
         muebles = categoria.getMuebles();
 
         // Establece la vista, el adaptador y la funcion al hacer click de los elementos de la lista
         ListView pairedListView = (ListView) findViewById(R.id.mueble_selector);
-        setListViewHeightBasedOnChildren(pairedListView);
-
         pairedListView.setAdapter(new MuebleAdapter(muebles));
         pairedListView.setOnItemClickListener(MuebleClickListener);
+        setListViewHeightBasedOnChildren(pairedListView);
 
 
         if(getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
             ListView pairedListView1 = (ListView) findViewById(R.id.mueble_selector1);
-            setListViewHeightBasedOnChildren(pairedListView1);
             pairedListView1.setAdapter(new MuebleAdapter(muebles));
             pairedListView1.setOnItemClickListener(MuebleClickListener);
+            setListViewHeightBasedOnChildren(pairedListView1);
         }
     }
 
