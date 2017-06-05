@@ -117,17 +117,17 @@ public class MuebleActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu (Menu menu) {
 
-        MenuItem ar_visible = menu.findItem(R.id.ar_visible);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.action_bar, menu);
 
         SharedPreferences estado_boton_cardboard = getSharedPreferences("BotonCardboard", Context.MODE_PRIVATE);
+        MenuItem ar_visible = menu.findItem(R.id.ar_visible);
         ar_visible.setChecked(estado_boton_cardboard.getBoolean("Estado", true));
         if (ar_visible.isChecked())
             ar_visible.setIcon(R.drawable.ic_card_board_on);
         else
             ar_visible.setIcon(R.drawable.ic_card_board_off);
 
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.action_bar, menu); // set your file name
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -157,6 +157,8 @@ public class MuebleActivity extends AppCompatActivity {
                 item.setChecked(true);
                 item.setIcon(R.drawable.ic_card_board_on);
             }
+
+            estado_boton_cardboard.commit();
         }
 
         return super.onOptionsItemSelected(item);
