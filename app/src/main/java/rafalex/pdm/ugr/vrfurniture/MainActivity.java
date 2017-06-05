@@ -2,7 +2,9 @@ package rafalex.pdm.ugr.vrfurniture;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
@@ -144,6 +146,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu (Menu menu) {
 
+        MenuItem ar_visible = menu.findItem(R.id.ar_visible);
+
+        SharedPreferences estado_boton_cardboard = getSharedPreferences("BotonCardboard", Context.MODE_PRIVATE);
+        ar_visible.setChecked(estado_boton_cardboard.getBoolean("Estado", true));
+        if (ar_visible.isChecked())
+            ar_visible.setIcon(R.drawable.ic_card_board_on);
+        else
+            ar_visible.setIcon(R.drawable.ic_card_board_off);
+
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.action_bar, menu); // set your file name
         return super.onCreateOptionsMenu(menu);
@@ -157,6 +168,24 @@ public class MainActivity extends AppCompatActivity {
 
             menuDialog.show();
             return true;
+        }
+
+        if (item.getItemId() == R.id.ar_visible) {
+
+            SharedPreferences.Editor estado_boton_cardboard = getSharedPreferences("BotonCardboard", Context.MODE_PRIVATE).edit();
+
+            if (item.isChecked()) {
+
+                estado_boton_cardboard.putBoolean("Estado", false);
+                item.setChecked(false);
+                item.setIcon(R.drawable.ic_card_board_off);
+            }
+            else {
+
+                estado_boton_cardboard.putBoolean("Estado", true);
+                item.setChecked(true);
+                item.setIcon(R.drawable.ic_card_board_on);
+            }
         }
 
         return super.onOptionsItemSelected(item);

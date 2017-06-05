@@ -1,7 +1,9 @@
 package rafalex.pdm.ugr.vrfurniture;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -101,10 +103,12 @@ public class MuebleActivity extends AppCompatActivity {
     private AdapterView.OnItemClickListener MuebleClickListener = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView av, View v, int position, long id) {
 
+            boolean card_boar = getSharedPreferences("BotonCardboard", Context.MODE_PRIVATE).getBoolean("Estado", true);
+
             // Inicia la siguiente acitividad.
             Intent i = new Intent(MuebleActivity.this, ARViewer.class);
             i.putExtra("Mueble", (Mueble) av.getItemAtPosition(position));
-            i.putExtra("Cardboard", true);
+            i.putExtra("Cardboard", card_boar);
             startActivity(i);
         }
     };
@@ -112,6 +116,15 @@ public class MuebleActivity extends AppCompatActivity {
     //Función onCreateOptionMenu, para añadir el estilo de nuestro action_bar
     @Override
     public boolean onCreateOptionsMenu (Menu menu) {
+
+        MenuItem ar_visible = menu.findItem(R.id.ar_visible);
+
+        SharedPreferences estado_boton_cardboard = getSharedPreferences("BotonCardboard", Context.MODE_PRIVATE);
+        ar_visible.setChecked(estado_boton_cardboard.getBoolean("Estado", true));
+        if (ar_visible.isChecked())
+            ar_visible.setIcon(R.drawable.ic_card_board_on);
+        else
+            ar_visible.setIcon(R.drawable.ic_card_board_off);
 
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.action_bar, menu); // set your file name
@@ -126,6 +139,24 @@ public class MuebleActivity extends AppCompatActivity {
 
             menuDialog.show();
             return true;
+        }
+
+        if (item.getItemId() == R.id.ar_visible) {
+
+            SharedPreferences.Editor estado_boton_cardboard = getSharedPreferences("BotonCardboard", Context.MODE_PRIVATE).edit();
+
+            if (item.isChecked()) {
+
+                estado_boton_cardboard.putBoolean("Estado", false);
+                item.setChecked(false);
+                item.setIcon(R.drawable.ic_card_board_off);
+            }
+            else {
+
+                estado_boton_cardboard.putBoolean("Estado", true);
+                item.setChecked(true);
+                item.setIcon(R.drawable.ic_card_board_on);
+            }
         }
 
         return super.onOptionsItemSelected(item);
