@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="rafalex.pdm.ugr.vrfurniture.MainActivity">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll_general"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true">
 
-    <ListView
-        android:id="@+id/categoria_selector"
+    <LinearLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:stackFromBottom="false"
-        android:layout_weight="1"></ListView>
+        tools:context="rafalex.pdm.ugr.vrfurniture.MainActivity">
 
-</LinearLayout>
+        <ListView
+            android:id="@+id/categoria_selector"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:stackFromBottom="false"
+            android:layout_weight="1"></ListView>
+
+    </LinearLayout>
+</ScrollView>
